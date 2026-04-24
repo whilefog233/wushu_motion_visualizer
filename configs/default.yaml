@@ -1,0 +1,34 @@
+app:
+  title: "wushu_motion_visualizer"
+  max_video_side: 1280
+  default_camera_width: 1280
+  default_camera_height: 720
+  recent_seconds_for_live_chart: 8
+
+pose:
+  model_complexity: 1
+  enable_segmentation: false
+  min_detection_confidence: 0.5
+  min_tracking_confidence: 0.5
+  visibility_threshold: 0.35
+  smooth_landmarks: true
+
+analysis:
+  speed_smoothing_alpha: 0.35
+  trajectory_seconds: 1.0
+
+export:
+  save_side_by_side_video: true
+  side_by_side_filename: "side_by_side_video.mp4"
+  keypoints_filename: "keypoints.json"
+  metrics_filename: "metrics.csv"
+  summary_filename: "summary.json"
+  report_filename: "summary.md"
+
+visualization:
+  skeleton_background_bgr: [18, 18, 18]
+  original_label: "Original"
+  skeleton_label: "Skeleton"
+  trajectory_radius: 2
+  text_color_bgr: [240, 240, 240]
+  show_trajectory_overlay: false
