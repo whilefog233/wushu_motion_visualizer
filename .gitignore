@@ -19,5 +19,8 @@ data/cache/**
 data/input/**
 !data/input/.gitkeep
 
+outputs/muscle_visualized/**
+!outputs/muscle_visualized/.gitkeep
+
 *.log
 *.zip
