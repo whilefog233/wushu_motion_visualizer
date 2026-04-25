@@ -1,6 +1,7 @@
 app:
   title: "wushu_motion_visualizer"
   max_video_side: 1280
+  default_camera_index: 0
   default_camera_width: 1280
   default_camera_height: 720
   recent_seconds_for_live_chart: 8

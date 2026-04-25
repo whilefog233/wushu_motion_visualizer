@@ -542,6 +542,7 @@ def _release_camera() -> None:
     st.session_state.camera_capture = None
     st.session_state.camera_processor = None
     st.session_state.camera_running = False
+    st.session_state.active_camera_index = None
 
 
 def render_realtime_page(config: dict) -> None:
@@ -556,7 +557,23 @@ def render_realtime_page(config: dict) -> None:
     control_left, control_right = st.columns([1.2, 1.0], gap="large")
     with control_left:
         render_panel_start()
+        camera_index_options = [0, 1, 2, 3]
+        default_camera_index = int(st.session_state.get("camera_index", config["app"].get("default_camera_index", 0)))
+        if default_camera_index not in camera_index_options:
+            camera_index_options.append(default_camera_index)
+            camera_index_options = sorted(set(camera_index_options))
+        selected_camera_index = st.selectbox(
+            "摄像头索引",
+            options=camera_index_options,
+            index=camera_index_options.index(default_camera_index),
+            help="电脑内置摄像头通常是 0，手机通过 DroidCam / Iriun 接入后通常可尝试 1。",
+        )
+        st.session_state.camera_index = selected_camera_index
         show_live_trajectory = st.checkbox("显示短轨迹残影（约 1 秒后自然消失）", value=False)
+        if st.session_state.get("camera_running", False):
+            active_camera_index = st.session_state.get("active_camera_index", selected_camera_index)
+            if active_camera_index != selected_camera_index:
+                st.warning(f"当前正在使用摄像头索引 {active_camera_index}。如果要切换到 {selected_camera_index}，请先停止再重新开始。")
         start_col, stop_col, clear_col, shot_col = st.columns(4)
         with start_col:
             start_clicked = st.button("开始摄像头", type="primary", use_container_width=True)
@@ -582,15 +599,16 @@ def render_realtime_page(config: dict) -> None:
         render_panel_end()
 
     if start_clicked and not st.session_state.get("camera_running", False):
-        capture = cv2.VideoCapture(0)
+        capture = cv2.VideoCapture(int(selected_camera_index))
         capture.set(cv2.CAP_PROP_FRAME_WIDTH, config["app"]["default_camera_width"])
         capture.set(cv2.CAP_PROP_FRAME_HEIGHT, config["app"]["default_camera_height"])
         if not capture.isOpened():
-            st.error("摄像头打开失败，请检查是否被其他程序占用。")
+            st.error(f"摄像头打开失败。请检查索引 {selected_camera_index} 是否正确，或确认手机摄像头驱动是否已接入 Windows。")
             return
         st.session_state.camera_capture = capture
         st.session_state.camera_processor = build_realtime_components(config)
         st.session_state.camera_running = True
+        st.session_state.active_camera_index = int(selected_camera_index)
         st.session_state.realtime_history = []
 
     if stop_clicked:
@@ -625,11 +643,18 @@ def render_realtime_page(config: dict) -> None:
     max_rows = int(max(result["fps"], 20.0) * recent_seconds)
     st.session_state.realtime_history = history[-max_rows:]
 
-    metrics_col = st.columns(4)
+    metrics_col = st.columns(5)
     metrics_col[0].metric("实时 FPS", f"{result['fps']:.1f}")
     metrics_col[1].metric("当前帧", f"{int(result['metrics']['frame_index'])}")
     metrics_col[2].metric("左手腕速度", _fmt_value(result["metrics"].get("left_wrist_speed"), "px/s"))
     metrics_col[3].metric("motion_intensity", _fmt_value(result["metrics"].get("motion_intensity")))
+    metrics_col[4].metric("摄像头索引", f"{st.session_state.get('active_camera_index', selected_camera_index)}")
+
+    st.caption(
+        "当前实时源："
+        f" 摄像头索引 {st.session_state.get('active_camera_index', selected_camera_index)}"
+        "。如果手机已被 DroidCam / Iriun 识别为摄像头，可优先尝试 1。"
+    )
 
     frame_col_left, frame_col_right = st.columns(2)
     with frame_col_left:
