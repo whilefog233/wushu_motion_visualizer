@@ -1,10 +1,13 @@
 __pycache__/
+.pytest_cache/
 *.py[cod]
 *.pyo
 *.pyd
 
 .DS_Store
 Thumbs.db
+.idea/
+.vscode/
 
 .streamlit/*
 !.streamlit/config.toml
@@ -12,12 +15,20 @@ Thumbs.db
 venv/
 env/
 
+data/input/**
+!data/input/.gitkeep
 data/output/**
 !data/output/.gitkeep
 data/cache/**
 !data/cache/.gitkeep
-data/input/**
-!data/input/.gitkeep
+
+outputs/muscle_visualized/**
+!outputs/muscle_visualized/.gitkeep
 
 *.log
 *.zip
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm

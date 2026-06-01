@@ -426,6 +426,11 @@ def render_video_analysis_page(config: dict) -> None:
             st.session_state.analysis_result = result
             st.session_state.video_current_frame = 0
             progress_bar.progress(1.0, text="分析完成")
+        except Exception as exc:
+            st.session_state.analysis_result = None
+            progress_bar.empty()
+            st.error(f"视频分析失败：{type(exc).__name__}: {exc}")
+            st.info("请确认视频文件可以被本机播放器打开，并尽量使用常见的 mp4/H.264 编码。")
         finally:
             processor.pose_backend.close()
 
@@ -599,11 +604,16 @@ def render_realtime_page(config: dict) -> None:
         render_panel_end()
 
     if start_clicked and not st.session_state.get("camera_running", False):
-        capture = cv2.VideoCapture(int(selected_camera_index))
-        capture.set(cv2.CAP_PROP_FRAME_WIDTH, config["app"]["default_camera_width"])
-        capture.set(cv2.CAP_PROP_FRAME_HEIGHT, config["app"]["default_camera_height"])
+        try:
+            capture = cv2.VideoCapture(int(selected_camera_index))
+            capture.set(cv2.CAP_PROP_FRAME_WIDTH, config["app"]["default_camera_width"])
+            capture.set(cv2.CAP_PROP_FRAME_HEIGHT, config["app"]["default_camera_height"])
+        except Exception as exc:
+            st.error(f"摄像头初始化失败：{type(exc).__name__}: {exc}")
+            return
         if not capture.isOpened():
             st.error(f"摄像头打开失败。请检查索引 {selected_camera_index} 是否正确，或确认手机摄像头驱动是否已接入 Windows。")
+            capture.release()
             return
         st.session_state.camera_capture = capture
         st.session_state.camera_processor = build_realtime_components(config)
@@ -635,7 +645,12 @@ def render_realtime_page(config: dict) -> None:
         _release_camera()
         return
 
-    result = processor.process_frame(frame, show_trajectories=show_live_trajectory)
+    try:
+        result = processor.process_frame(frame, show_trajectories=show_live_trajectory)
+    except Exception as exc:
+        st.error(f"实时帧处理失败：{type(exc).__name__}: {exc}")
+        _release_camera()
+        return
     st.session_state.last_realtime_result = result
     history = st.session_state.get("realtime_history", [])
     history.append(result["metrics"])
