@@ -80,8 +80,8 @@ def build_metric_groups(metrics: Mapping[str, float], frame_index: int, fps: flo
             ("左脚踝速度峰值", _format_float(float(metrics.get("left_ankle_speed_peak", float("nan"))), "px/s")),
             ("右脚踝速度峰值", _format_float(float(metrics.get("right_ankle_speed_peak", float("nan"))), "px/s")),
             ("髋部速度峰值", _format_float(float(metrics.get("hip_center_speed_peak", float("nan"))), "px/s")),
-            ("腕部聚合峰值", _format_float(float(metrics.get("wrist_speed_peak", float("nan"))), "px/s")),
-            ("踝部聚合峰值", _format_float(float(metrics.get("ankle_speed_peak", float("nan"))), "px/s")),
+            ("手腕聚合峰值", _format_float(float(metrics.get("wrist_speed_peak", float("nan"))), "px/s")),
+            ("脚踝聚合峰值", _format_float(float(metrics.get("ankle_speed_peak", float("nan"))), "px/s")),
             ("躯干角速度峰值", _format_float(float(metrics.get("torso_angular_velocity_peak", float("nan"))), "deg/s")),
         ],
         "峰值时间": [
