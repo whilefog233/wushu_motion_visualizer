@@ -1,6 +1,6 @@
 # wushu_motion_visualizer
 
-基于 `MediaPipe Pose + OpenCV + Streamlit` 的本地武术动作骨架可视化分析系统。
+基于 `MediaPipe Pose + OpenCV + Streamlit` 的本地武术动作骨架可视化与**技术诊断**系统。
 
 这个项目的定位很明确：
 
@@ -15,8 +15,47 @@
 - 骨架变化
 - 角度、速度、重心、轨迹、`motion_intensity`
 - 轻量版肌肉参与度可视化结果
+- **V3 技术诊断**：直拳的发力链时序、常见错误模式与训练建议（解释"为什么"，不打综合分）
 
 所有动作质量判断仍然交给人类教练完成。
+
+---
+
+## V2 架构（第一阶段重构）
+
+> 详细重构说明见 [REFACTOR_REPORT.md](./REFACTOR_REPORT.md)。
+
+V2 核心变化：
+
+- **一次姿态推理**：同一个视频 / 同一个 `analysis_id` 默认只执行一次完整 MediaPipe Pose，产出统一 `pose.json`，骨架 / 指标 / 肌肉 / 发力链 / AI Coach 全部复用。
+- **统一 analysis_id**：每次分析生成唯一 `analysis_id`，所有结果统一保存到 `data/analyses/{analysis_id}/`（source.mp4 / metadata.json / pose.json / metrics.csv / analysis.json / muscle.json / power_chain.json / coach_input.json / performance.json / exports/）。
+- **UI 与核心算法分离**：核心引擎在 `src/`（`src/analysis/pipeline.py::analyze_video()`），完全脱离 Streamlit，输入输出只用普通 Python 类型。
+- **分析与视频导出分离**：默认只生成数据，不生成完整 MP4；`export_skeleton_video(analysis_id)` / `export_muscle_video(analysis_id)` 按需导出。
+- **独立 Worker**：`python worker.py --input xxx.mp4` 可脱离 Streamlit 完整分析。
+- **AI Coach 预留**：`src/coach/` 输出结构化 `coach_input.json`，未来直接喂给 GPT / Gemini。
+- **进度状态机**：PREPARING → EXTRACTING_POSE → … → COMPLETED / FAILED，UI 与未来网站共用。
+- **阶段缓存与错误恢复**：已完成的阶段（带算法版本）重跑直接复用；失败保留已生成数据。
+
+```bash
+# 独立分析（无需启动 Streamlit）
+python worker.py --input data/input/xxx.mp4 --export-skeleton --json
+```
+
+---
+
+## V3 技术诊断引擎（第二阶段）
+
+> 详细说明见 [V3_REPORT.md](./V3_REPORT.md)。
+
+V3 把系统从"动作数据可视化"升级为**武术技术诊断系统**，第一版只重点支持**直拳 / 冲拳**：
+
+- **动作阶段识别**：准备 → 启动 → 加速 → 最大伸展/击打 → 回收，由关键事件对自动切分。
+- **关键事件与发力链时序**：髋/肩/腕启动、髋/肩/肘峰值、腕速峰值、最大伸展、回收、结束；重点分析 **髋→肩→肘→腕** 的毫秒间隔，而不是只看数值大小。
+- **错误模式库**：肩启动过早、髋参与不足、手臂主导发力、发力链顺序混乱、肘部外翻、身体过度前冲、末端速度不足、回收过慢、头部晃动过大、动作稳定性差、左右侧差异。每条诊断都带 `问题 / 严重度 / 置信度 / 证据 / 含义 / 训练建议`。
+- **参考系统**：Self Baseline（最近 N 次直拳滚动基线）、Personal Best、Expert Template（预留接口）。**不写死绝对标准**，无可靠依据时只输出结构规则并标注实验性质。
+- **AI Coach 预留**：诊断结果合并进 `coach_input.json`，未来 GPT/Gemini 只负责把结构化诊断翻译成教练语言，不自己判断动作。
+
+直拳分析产物落在 `data/analyses/{analysis_id}/technique/straight_punch.json`，页面上"直拳技术诊断"区块展示本次最值得改的 3 个问题与本轮最重要的一件事。
 
 ---
 
@@ -48,13 +87,15 @@
 
 ### 1. 视频分析
 
-上传 `mp4` 或直接选择 `data/input` 中的本地视频后，系统会：
+上传 `mp4` 视频后，系统会：
 
-1. 逐帧做人体姿态识别
-2. 生成左原视频、右骨架画面的 side-by-side 结果视频
+1. 逐帧做人体姿态识别（同一 `analysis_id` 只跑一次 MediaPipe，结果复用）
+2. 显示原视频 / 骨架对比结果
 3. 提供逐帧滑块查看
 4. 显示当前帧角度、速度、重心、峰值、峰值时间等指标
-5. 输出可选导出文件
+5. 输出可选导出文件（骨架视频 / 肌肉可视化视频按需导出，不默认生成 MP4）
+
+> 同一个视频重复上传会按内容指纹自动命中已有分析，直接打开历史结果，不再重复识别。
 
 ### 2. 实时摄像头
 
@@ -364,29 +405,53 @@ motion_intensity =
 ```text
 wushu_motion_visualizer/
   app.py
+  worker.py                # V2：独立命令行分析入口
   requirements.txt
   README.md
   THIRD_PARTY_NOTICES.md
+  REFACTOR_REPORT.md       # V2：重构报告
   configs/
     default.yaml
   src/
+    models/                # V2：PoseResult / AnalysisStatus / AnalysisStage
+      pose_result.py
+      analysis.py
     pose/
       mediapipe_backend.py
+      extractor.py         # V2：统一 PoseExtractor（MediaPipe 只跑一次）
     analysis/
       kinematics.py
       metrics.py
       motion_intensity.py
       smoothing.py
+      scale_normalization.py  # V2：normalized/world 速度
+      power_chain.py          # V2：发力链分析
+      muscle.py               # V2：纯数据肌肉分析
+      pipeline.py             # V2：统一 AnalysisPipeline
     video/
-      offline_processor.py
+      offline_processor.py    # 兼容层（委托 pipeline）
       realtime_processor.py
       video_player.py
+      video_reader.py         # V2：统一视频读取
     visualization/
       draw_pose.py
       draw_dashboard.py
       charts.py
     export/
       exporters.py
+      skeleton_video.py       # V2：按需导出骨架视频
+      muscle_video.py         # V2：按需导出肌肉视频
+    coach/
+      coach_input.py          # V2：AI Coach 结构化输入
+    technique/                # V3：直拳技术诊断引擎
+      engine.py               #   analyze_technique 主入口
+      profiles.py             #   直拳 TechniqueProfile（阶段/事件/错误模式）
+      signals.py / events.py / phases.py / timing.py
+      errors.py               #   11 种错误模式诊断
+      references.py            #   Self Baseline / PB / Expert Template
+      models.py
+    storage/
+      analysis_store.py       # V2：统一 analysis 目录管理
     utils/
       paths.py
       video_utils.py
@@ -395,16 +460,22 @@ wushu_motion_visualizer/
     __init__.py
     muscle_estimator.py
     muscle_renderer.py
-    video_muscle_pipeline.py
+    video_muscle_pipeline.py  # 兼容层（委托 pipeline）
     opensim_adapter.py
   pages/
     02_muscle_visualizer.py
   data/
     input/
-    output/
+    output/               # 旧结果（只读兼容）
+    analyses/             # V2：统一分析结果 data/analyses/{analysis_id}/
     cache/
   outputs/
     muscle_visualized/
+  tests/
+    test_kinematics.py
+    test_kinetic_chain.py
+    test_motion_metrics.py
+    test_pipeline_v2.py   # V2：集成测试
 ```
 
 ---
@@ -449,7 +520,30 @@ http://0.0.0.0:8501
 
 ## 输出文件
 
-### 视频分析输出
+### V2：统一分析结果（推荐）
+
+V2 起，视频分析结果统一保存在：
+
+```text
+data/analyses/{analysis_id}/
+  source.mp4            # 源视频（优先硬链接，省磁盘）
+  metadata.json         # analysis_id / 原始文件名 / 创建时间 / 视频信息 / 状态 / 阶段 / 算法版本
+  pose.json             # 统一姿态结果（fps / frame_count / width / height / duration / timestamps /
+                        #   landmarks / visibility / normalized_landmarks / world_landmarks）
+  metrics.csv           # 逐帧指标（旧指标 + normalized/world 速度 + 身体尺度）
+  analysis.json         # 汇总（summary / normalized_speed / muscle / power_chain）
+  muscle.json           # 肌肉统计（8 组肌群 + 峰值时刻 + 主导发力链提示）
+  muscle_metrics.csv    # 逐帧肌肉参与度
+  power_chain.json      # 发力链阶段分布与提示
+  coach_input.json      # AI Coach 结构化输入（未来喂给 GPT / Gemini）
+  performance.json      # 性能统计（各阶段耗时 / FPS）
+  summary.md            # 文本摘要（兼容旧输出）
+  exports/              # 按需导出的视频（默认分析不生成 MP4）
+    skeleton_video.mp4
+    muscle_video.mp4
+```
+
+### 旧版视频分析输出（兼容保留）
 
 视频分析完成后，结果保存在：
 

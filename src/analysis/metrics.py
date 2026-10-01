@@ -108,6 +108,60 @@ def _safe_mean(*values: float) -> float:
     return float(sum(finite_values) / len(finite_values))
 
 
+def _line_angle_deg(point_a, point_b) -> float:
+    """肩部连线相对水平线的角度（肌肉分析需要的 torso_rotation_angle）。"""
+    if point_a is None or point_b is None:
+        return float("nan")
+    x1, y1 = point_a.get("pixel_x"), point_a.get("pixel_y")
+    x2, y2 = point_b.get("pixel_x"), point_b.get("pixel_y")
+    if x1 is None or y1 is None or x2 is None or y2 is None:
+        return float("nan")
+    if not all(math.isfinite(v) for v in (x1, y1, x2, y2)):
+        return float("nan")
+    return float(math.degrees(math.atan2(y2 - y1, x2 - x1)))
+
+
+def _angle_wrap_diff(current: float, previous: float) -> float:
+    if not math.isfinite(current) or not math.isfinite(previous):
+        return float("nan")
+    delta = current - previous
+    while delta > 180.0:
+        delta -= 360.0
+    while delta < -180.0:
+        delta += 360.0
+    return float(delta)
+
+
+def _add_extended_metrics(metrics: dict[str, float], previous_metrics: Optional[MetricDict], fps: float) -> None:
+    """补充肌肉分析 / 发力链分析需要的额外指标（在基础指标之上追加）。"""
+    previous_metrics = previous_metrics or {}
+    metrics["left_ankle_angular_velocity"] = _safe_diff(
+        float(metrics.get("left_ankle_angle", float("nan"))),
+        float(previous_metrics.get("left_ankle_angle", float("nan"))),
+        fps,
+    )
+    metrics["right_ankle_angular_velocity"] = _safe_diff(
+        float(metrics.get("right_ankle_angle", float("nan"))),
+        float(previous_metrics.get("right_ankle_angle", float("nan"))),
+        fps,
+    )
+    metrics["left_shoulder_angular_velocity"] = _safe_diff(
+        float(metrics.get("left_shoulder_angle", float("nan"))),
+        float(previous_metrics.get("left_shoulder_angle", float("nan"))),
+        fps,
+    )
+    metrics["right_shoulder_angular_velocity"] = _safe_diff(
+        float(metrics.get("right_shoulder_angle", float("nan"))),
+        float(previous_metrics.get("right_shoulder_angle", float("nan"))),
+        fps,
+    )
+    metrics["left_hip_angular_acceleration"] = _safe_diff(
+        float(metrics.get("hip_angular_velocity", float("nan"))),
+        float(previous_metrics.get("hip_angular_velocity", float("nan"))),
+        fps,
+    )
+
+
 def compute_frame_metrics(
     landmarks: LandmarkDict,
     previous_landmarks: Optional[LandmarkDict],
@@ -122,7 +176,6 @@ def compute_frame_metrics(
     hip_center = midpoint(landmarks.get("left_hip"), landmarks.get("right_hip"))
     previous_hip_center = midpoint(previous_landmarks.get("left_hip"), previous_landmarks.get("right_hip")) if previous_landmarks else None
     shoulder_center = midpoint(landmarks.get("left_shoulder"), landmarks.get("right_shoulder"))
-
     raw_speeds = {
         "left_wrist_speed": _point_speed(landmarks.get("left_wrist"), previous_landmarks.get("left_wrist") if previous_landmarks else None, fps),
         "right_wrist_speed": _point_speed(landmarks.get("right_wrist"), previous_landmarks.get("right_wrist") if previous_landmarks else None, fps),
@@ -161,6 +214,8 @@ def compute_frame_metrics(
             landmarks.get("right_foot_index") or landmarks.get("right_ankle"),
         ),
         "shoulder_width": calculate_distance(landmarks.get("left_shoulder"), landmarks.get("right_shoulder")),
+        "hip_width": calculate_distance(landmarks.get("left_hip"), landmarks.get("right_hip")),
+        "torso_length": calculate_distance(shoulder_center, hip_center),
         "hand_distance": calculate_distance(landmarks.get("left_wrist"), landmarks.get("right_wrist")),
         "center_of_mass_x": center_of_mass_x,
         "center_of_mass_y": center_of_mass_y,
@@ -211,6 +266,15 @@ def compute_frame_metrics(
         float(previous_metrics.get("right_elbow_angular_velocity", float("nan"))),
         fps,
     )
+
+    # 肌肉分析 / 发力链分析所需的扩展指标
+    current_rotation = _line_angle_deg(landmarks.get("left_shoulder"), landmarks.get("right_shoulder"))
+    previous_rotation = float(previous_metrics.get("torso_rotation_angle", float("nan")))
+    metrics["torso_rotation_angle"] = current_rotation
+    metrics["torso_rotation_velocity"] = (
+        _angle_wrap_diff(current_rotation, previous_rotation) * fps if fps > 0 else float("nan")
+    )
+    _add_extended_metrics(metrics, previous_metrics, fps)
     return metrics, smoothed_speeds
 
 

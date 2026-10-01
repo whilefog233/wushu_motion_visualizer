@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 from pathlib import Path
 from typing import Optional
 
@@ -25,8 +26,26 @@ def make_video_writer(path: Path, fps: float, frame_size: tuple[int, int]) -> cv
     return cv2.VideoWriter(str(path), fourcc, fps, frame_size)
 
 
+def _resolve_ffmpeg() -> Optional[str]:
+    """优先系统 PATH 的 ffmpeg；没有则回退到 imageio-ffmpeg 自带二进制。"""
+    system_ffmpeg = shutil.which("ffmpeg")
+    if system_ffmpeg:
+        return system_ffmpeg
+    try:
+        import imageio_ffmpeg
+
+        return imageio_ffmpeg.get_ffmpeg_exe()
+    except Exception:
+        return None
+
+
 def transcode_to_browser_mp4(input_path: Path, output_path: Path) -> bool:
-    ffmpeg_path = shutil.which("ffmpeg")
+    """转码为浏览器可播放的 H.264 + yuv420p + faststart。
+
+    仅当确实需要（浏览器不支持的编码 / 显式导出 H.264）时才转码，
+    避免无意义二次编码。返回是否转码成功。
+    """
+    ffmpeg_path = _resolve_ffmpeg()
     if ffmpeg_path is None:
         return False
 
@@ -61,3 +80,19 @@ def split_side_by_side_frame(frame: np.ndarray) -> tuple[np.ndarray, np.ndarray]
     width = frame.shape[1]
     half_width = width // 2
     return frame[:, :half_width].copy(), frame[:, half_width:].copy()
+
+
+def video_fingerprint(path: str | Path, chunk_size: int = 1 << 20) -> str:
+    """计算视频内容指纹（md5，分块流式读取，不把整个文件读进内存）。
+
+    用于"同一视频不重复分析"：上传文件名带时间戳、mtime 不同，
+    但内容字节完全一致时指纹相同。
+    """
+    hasher = hashlib.md5()
+    with open(path, "rb") as file_handle:
+        while True:
+            chunk = file_handle.read(chunk_size)
+            if not chunk:
+                break
+            hasher.update(chunk)
+    return hasher.hexdigest()
