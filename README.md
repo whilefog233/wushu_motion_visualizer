@@ -487,11 +487,26 @@ wushu_motion_visualizer/
 - Windows 11
 - Python `3.10` 或 `3.11`
 
-安装依赖：
+### 部署步骤
 
 ```bash
+# 1. 克隆仓库
+git clone https://github.com/whilefog233/wushu_motion_visualizer.git
+cd wushu_motion_visualizer
+
+# 2. 创建虚拟环境（关键：路径必须纯英文，不能有中文）
+#    项目在 D 盘，venv 也放 D 盘纯英文路径
+python -m venv D:\kungfu_venv
+
+# 3. 激活虚拟环境
+D:\kungfu_venv\Scripts\activate
+
+# 4. 安装依赖
 python -m pip install -r requirements.txt
 ```
+
+> **重要**：MediaPipe 在中文/非 ASCII 路径下初始化会失败。
+> 项目目录可以有中文，但**虚拟环境必须建在纯英文路径**（如 `D:\kungfu_venv`），不要建在项目目录里。
 
 如果你的 `pip` 启动器异常，优先使用 `python -m pip`，不要直接使用 `pip install`。
 
