@@ -13,13 +13,22 @@ pose:
   min_tracking_confidence: 0.5
   visibility_threshold: 0.35
   smooth_landmarks: true
+  store_world_landmarks: true
 
 analysis:
   speed_smoothing_alpha: 0.35
   trajectory_seconds: 1.0
 
+pipeline:
+  algorithm_version: "2.0.0"
+  # 默认只生成数据（pose.json / metrics.csv / analysis.json / muscle.json / power_chain.json），
+  # 不生成完整 MP4。骨架/肌肉视频改为用户主动导出。
+  output_side_by_side_default: false
+  muscle_smoothing_alpha: 0.28
+  muscle_baseline: 0.05
+
 export:
-  save_side_by_side_video: true
+  save_side_by_side_video: false
   side_by_side_filename: "side_by_side_video.mp4"
   keypoints_filename: "keypoints.json"
   metrics_filename: "metrics.csv"

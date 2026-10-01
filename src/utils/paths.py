@@ -9,10 +9,11 @@ DATA_DIR = PROJECT_ROOT / "data"
 INPUT_DIR = DATA_DIR / "input"
 OUTPUT_DIR = DATA_DIR / "output"
 CACHE_DIR = DATA_DIR / "cache"
+ANALYSES_DIR = DATA_DIR / "analyses"
 
 
 def ensure_project_dirs() -> None:
-    for path in (DATA_DIR, INPUT_DIR, OUTPUT_DIR, CACHE_DIR):
+    for path in (DATA_DIR, INPUT_DIR, OUTPUT_DIR, CACHE_DIR, ANALYSES_DIR):
         path.mkdir(parents=True, exist_ok=True)
 
 

@@ -39,6 +39,7 @@ class MediaPipePoseBackend:
         height, width = frame_bgr.shape[:2]
 
         landmarks = {}
+        world_landmarks = {}
         if results.pose_landmarks:
             for index, landmark in enumerate(results.pose_landmarks.landmark):
                 name = POSE_LANDMARK_NAMES[index]
@@ -50,11 +51,20 @@ class MediaPipePoseBackend:
                     "pixel_x": float(landmark.x * width),
                     "pixel_y": float(landmark.y * height),
                 }
+        if results.pose_world_landmarks:
+            for index, landmark in enumerate(results.pose_world_landmarks.landmark):
+                name = POSE_LANDMARK_NAMES[index]
+                world_landmarks[name] = {
+                    "x": float(landmark.x),
+                    "y": float(landmark.y),
+                    "z": float(landmark.z),
+                }
 
         return {
             "landmarks": landmarks,
             "pose_landmarks": results.pose_landmarks,
             "pose_world_landmarks": results.pose_world_landmarks,
+            "world_landmarks": world_landmarks,
             "connections": self.pose_connections,
         }
 

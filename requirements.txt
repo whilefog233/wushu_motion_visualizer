@@ -1,9 +1,20 @@
-mediapipe>=0.10.14
-opencv-python>=4.9.0
+# 依赖版本已按 V2 重构验证固定：
+# - mediapipe 0.10.14 是最后支持 legacy `mp.solutions` API 的版本（现有实时/姿态代码依赖它）
+# - mediapipe 0.10.14 需要 protobuf>=4.25.3,<5；streamlit 需降到 <1.40 以兼容 protobuf 4.x
+# - 重要：mediapipe 的 C++ 资源加载在含非 ASCII 字符的安装路径下会失败（本项目路径含中文），
+#   请务必在纯 ASCII 路径创建虚拟环境，例如：
+#     python -m venv C:\Users\<你>\kungfu_venv
+#     C:\Users\<你>\kungfu_venv\Scripts\pip install -r requirements.txt
+mediapipe==0.10.14
+opencv-python>=4.9,<5
+opencv-contrib-python<5
 numpy>=1.24,<2.0
 pandas>=2.0.0
-streamlit>=1.34.0
+streamlit>=1.34,<1.40
+protobuf>=4.25.3,<5
 plotly>=5.20.0
 PyYAML>=6.0.1
 Pillow>=10.0.0
 pytest>=7.4.0
+# 导出视频转码 H.264 用：系统无 ffmpeg 时回退到 imageio-ffmpeg 自带二进制
+imageio-ffmpeg>=0.4.9
