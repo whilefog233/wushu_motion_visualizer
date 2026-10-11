@@ -1,0 +1,4 @@
+# API 后端额外依赖（不并入主 requirements.txt，避免破坏原 Streamlit 环境）
+fastapi>=0.110
+uvicorn[standard]>=0.29
+python-multipart>=0.0.9
