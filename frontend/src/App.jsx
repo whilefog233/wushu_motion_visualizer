@@ -10,7 +10,7 @@ import AnalysisTabs from './components/AnalysisTabs'
 import ScorePanel from './components/ScorePanel'
 import HistoryPage from './components/HistoryPage'
 import SettingsPage from './components/SettingsPage'
-import { uploadVideo, getStatus, getResult, getMetrics, getPose } from './api/client'
+import { uploadVideo, getStatus, getResult, getMetrics, getPose, getMuscleFrames } from './api/client'
 
 export default function App() {
   const [nav, setNav] = useState('home')
@@ -18,6 +18,7 @@ export default function App() {
   const [task, setTask] = useState(null) // { id, status, stage, error, uploadPct }
   const [result, setResult] = useState(null)
   const [metrics, setMetrics] = useState(null)
+  const [muscleFrames, setMuscleFrames] = useState(null)
   const [pose, setPose] = useState(null)
   const [frameIndex, setFrameIndex] = useState(0)
   const [seekFrame, setSeekFrame] = useState(null) // { frame, nonce }
@@ -31,15 +32,17 @@ export default function App() {
   // 拉取并保存一个已完成任务的全部结果（result/metrics/pose）
   const fetchResults = useCallback(async (id) => {
     const version = requestRef.current
-    const [res, met, poseData] = await Promise.all([
+    const [res, met, poseData, muscleRows] = await Promise.all([
       getResult(id),
       getMetrics(id).catch(() => null),
       getPose(id).catch(() => null),
+      getMuscleFrames(id).catch(() => null),
     ])
     if (version !== requestRef.current) return null
     setResult(res)
     setMetrics(met)
     setPose(poseData)
+    setMuscleFrames(muscleRows)
     return res
   }, [])
 
@@ -48,7 +51,7 @@ export default function App() {
     async (id) => {
       const version = ++requestRef.current
       clearTimeout(pollRef.current)
-      setTask(null); setFile(null); setResult(null); setMetrics(null); setPose(null); setFrameIndex(0); setSeekFrame(null)
+      setTask(null); setFile(null); setResult(null); setMetrics(null); setMuscleFrames(null); setPose(null); setFrameIndex(0); setSeekFrame(null)
       try {
         const s = await getStatus(id)
         if (version !== requestRef.current) return
@@ -89,7 +92,7 @@ export default function App() {
     if (!file) return
     ++requestRef.current
     setSeekFrame(null)
-    setFatal(null); setResult(null); setMetrics(null); setPose(null); setFrameIndex(0)
+    setFatal(null); setResult(null); setMetrics(null); setMuscleFrames(null); setPose(null); setFrameIndex(0)
     try {
       setTask({ status: 'UPLOADING', stage: 'UPLOADING', uploadPct: 0 })
       const created = await uploadVideo(file, (p) =>
@@ -160,14 +163,14 @@ export default function App() {
             )}
 
             <div className="setup-grid">
-              <UploadPanel file={file} onFile={(selected) => { ++requestRef.current; setFile(selected); setTask(null); setResult(null); setMetrics(null); setPose(null); setFrameIndex(0); setSeekFrame(null); setFatal(null) }} disabled={busy} />
+              <UploadPanel file={file} onFile={(selected) => { ++requestRef.current; setFile(selected); setTask(null); setResult(null); setMetrics(null); setMuscleFrames(null); setPose(null); setFrameIndex(0); setSeekFrame(null); setFatal(null) }} disabled={busy} />
               <PipelineSteps task={task} />
               <StartButton onSettings={() => setNav('settings')} onClick={startAnalysis} busy={busy} disabled={!file} />
             </div>
 
             <div className="analysis-grid">
               <VideoStage file={file} task={task} result={result} pose={pose} metrics={metrics} onFrame={onFrame} seekFrame={seekFrame} frameIndex={frameIndex} onSeek={onSeek} />
-              <AnalysisTabs result={result} metrics={metrics} pose={pose} frameIndex={frameIndex} onSeek={onSeek} />
+              <AnalysisTabs result={result} metrics={metrics} muscleFrames={muscleFrames} pose={pose} frameIndex={frameIndex} onSeek={onSeek} />
             </div>
             <div className="score-section"><ScorePanel result={result} /></div>
             <ExportPanel result={result} />

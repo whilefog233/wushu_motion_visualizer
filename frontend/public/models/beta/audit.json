@@ -1,0 +1,262 @@
+[
+  {
+    "mesh": "Body",
+    "vertices": 46098,
+    "blended": 39382,
+    "invalid": 0,
+    "bones": [
+      {
+        "name": "mixamorigRightLeg",
+        "parent": "mixamorigRightUpLeg",
+        "position": [
+          -0.1037988064272572,
+          0.48973631446511284,
+          -0.021060116523959765
+        ]
+      },
+      {
+        "name": "mixamorigRightFoot",
+        "parent": "mixamorigRightLeg",
+        "position": [
+          -0.11944224882364443,
+          0.08977845231880965,
+          -0.0464772751023107
+        ]
+      },
+      {
+        "name": "mixamorigRightToeBase",
+        "parent": "mixamorigRightFoot",
+        "position": [
+          -0.10467221825462583,
+          0.0017974136460229828,
+          0.07369499320406524
+        ]
+      },
+      {
+        "name": "mixamorigRightHandIndex2",
+        "parent": "mixamorigRightHandIndex1",
+        "position": [
+          -0.7785181867641155,
+          1.385878849408056,
+          -0.04447940449814519
+        ]
+      },
+      {
+        "name": "mixamorigRightHandIndex3",
+        "parent": "mixamorigRightHandIndex2",
+        "position": [
+          -0.8098446593705718,
+          1.3865514354871353,
+          -0.04424084105844862
+        ]
+      },
+      {
+        "name": "mixamorigRightHandIndex1",
+        "parent": "mixamorigRightHand",
+        "position": [
+          -0.7568712081702499,
+          1.3912395671436455,
+          -0.04553766235266601
+        ]
+      },
+      {
+        "name": "mixamorigRightHand",
+        "parent": "mixamorigRightForeArm",
+        "position": [
+          -0.6618018057938801,
+          1.3923651192248672,
+          -0.04985198659041726
+        ]
+      },
+      {
+        "name": "mixamorigRightUpLeg",
+        "parent": "mixamorigHips",
+        "position": [
+          -0.0931575745344162,
+          0.9176580309867859,
+          -0.027818206697702408
+        ]
+      },
+      {
+        "name": "mixamorigHips",
+        "parent": "",
+        "position": [
+          0.0002568960189819336,
+          0.9699353575706482,
+          -0.03246923163533211
+        ]
+      },
+      {
+        "name": "mixamorigLeftUpLeg",
+        "parent": "mixamorigHips",
+        "position": [
+          0.09367136657238007,
+          0.9176580309867859,
+          -0.0317925289273262
+        ]
+      },
+      {
+        "name": "mixamorigRightForeArm",
+        "parent": "mixamorigRightArm",
+        "position": [
+          -0.4150206200818455,
+          1.3909960626042965,
+          -0.05003900086794458
+        ]
+      },
+      {
+        "name": "mixamorigRightArm",
+        "parent": "mixamorigRightShoulder",
+        "position": [
+          -0.19362615579557663,
+          1.4019077141637863,
+          -0.05413433309605483
+        ]
+      },
+      {
+        "name": "mixamorigSpine2",
+        "parent": "mixamorigSpine1",
+        "position": [
+          0.00025689601898193365,
+          1.2993235596799688,
+          -0.047988019924744475
+        ]
+      },
+      {
+        "name": "mixamorigRightShoulder",
+        "parent": "mixamorigSpine2",
+        "position": [
+          -0.06419597566127777,
+          1.4275609263562996,
+          -0.054470729123934636
+        ]
+      },
+      {
+        "name": "mixamorigSpine1",
+        "parent": "mixamorigSpine",
+        "position": [
+          0.00025689601898193365,
+          1.173842427322958,
+          -0.04207609953244081
+        ]
+      },
+      {
+        "name": "mixamorigSpine",
+        "parent": "mixamorigHips",
+        "position": [
+          0.0002568960189819336,
+          1.0640462636947632,
+          -0.036903172731399536
+        ]
+      },
+      {
+        "name": "mixamorigNeck",
+        "parent": "mixamorigSpine2",
+        "position": [
+          0.00025689601898193365,
+          1.4404898890638191,
+          -0.0546389259809102
+        ]
+      },
+      {
+        "name": "mixamorigHead",
+        "parent": "mixamorigNeck",
+        "position": [
+          0.00025689601898193365,
+          1.4996027955198128,
+          -0.04036135603128328
+        ]
+      },
+      {
+        "name": "mixamorigLeftLeg",
+        "parent": "mixamorigLeftUpLeg",
+        "position": [
+          0.1043125984532818,
+          0.48973631656850825,
+          -0.02285954724517933
+        ]
+      },
+      {
+        "name": "mixamorigLeftFoot",
+        "parent": "mixamorigLeftLeg",
+        "position": [
+          0.11995604680964637,
+          0.08977828109274305,
+          -0.04318136292795977
+        ]
+      },
+      {
+        "name": "mixamorigLeftToeBase",
+        "parent": "mixamorigLeftFoot",
+        "position": [
+          0.10518599688146867,
+          0.0017976108975973487,
+          0.07247626778287722
+        ]
+      },
+      {
+        "name": "mixamorigLeftShoulder",
+        "parent": "mixamorigSpine2",
+        "position": [
+          0.06470976769924164,
+          1.4275609263562994,
+          -0.054807126563176045
+        ]
+      },
+      {
+        "name": "mixamorigLeftArm",
+        "parent": "mixamorigLeftShoulder",
+        "position": [
+          0.1941399402328054,
+          1.4019076758784348,
+          -0.05514352741918877
+        ]
+      },
+      {
+        "name": "mixamorigLeftForeArm",
+        "parent": "mixamorigLeftArm",
+        "position": [
+          0.4155343964654158,
+          1.3909959629440882,
+          -0.04988817452832797
+        ]
+      },
+      {
+        "name": "mixamorigLeftHand",
+        "parent": "mixamorigLeftForeArm",
+        "position": [
+          0.6623156005288886,
+          1.392364950690688,
+          -0.0516522182189879
+        ]
+      },
+      {
+        "name": "mixamorigLeftHandIndex1",
+        "parent": "mixamorigLeftHand",
+        "position": [
+          0.7002938328469515,
+          1.3837897475099499,
+          -0.04355590301700957
+        ]
+      },
+      {
+        "name": "mixamorigLeftHandIndex2",
+        "parent": "mixamorigLeftHandIndex1",
+        "position": [
+          0.7364167517422534,
+          1.3865359701964868,
+          -0.04422529682401558
+        ]
+      },
+      {
+        "name": "mixamorigLeftHandIndex3",
+        "parent": "mixamorigLeftHandIndex2",
+        "position": [
+          0.7900160497479378,
+          1.3865501534782367,
+          -0.04272398264815853
+        ]
+      }
+    ]
+  }
+]

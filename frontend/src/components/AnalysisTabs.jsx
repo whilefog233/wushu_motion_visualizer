@@ -2,7 +2,7 @@ import { useState } from 'react'
 import PoseAnalysisTab from './PoseAnalysisTab'
 import PowerChainTab from './PowerChainTab'
 import TechCompareTab from './TechCompareTab'
-import MuscleTab from './MuscleTab'
+import MuscleTab from './MuscleTabV2'
 import AIAdviceTab from './AIAdviceTab'
 
 const tabs = [
@@ -13,7 +13,7 @@ const tabs = [
   { id: 'ai', label: 'AI 建议' },
 ]
 
-export default function AnalysisTabs({ result, metrics, pose, frameIndex, onSeek }) {
+export default function AnalysisTabs({ result, metrics, muscleFrames, pose, frameIndex, onSeek }) {
   const [tab, setTab] = useState('pose')
   const Panel = {
     pose: PoseAnalysisTab,
@@ -24,7 +24,7 @@ export default function AnalysisTabs({ result, metrics, pose, frameIndex, onSeek
   }[tab]
 
   return (
-    <section className="glass analysis-panel flex min-w-0 flex-1 flex-col overflow-hidden">
+    <section className={`glass analysis-panel flex min-w-0 flex-1 flex-col overflow-hidden ${tab === 'muscle' ? 'muscle-active' : ''}`}>
       <div role="tablist" aria-label="分析模块" className="analysis-tablist">
         {tabs.map((t) => {
           const on = tab === t.id
@@ -42,7 +42,7 @@ export default function AnalysisTabs({ result, metrics, pose, frameIndex, onSeek
         })}
       </div>
       <div role="tabpanel" id="analysis-tab-content" aria-labelledby={'tab-'+tab} className="analysis-tab-content">
-        <Panel result={result} metrics={metrics} pose={pose} frameIndex={frameIndex} onSeek={onSeek} />
+        <Panel result={result} metrics={metrics} muscleFrames={muscleFrames} pose={pose} frameIndex={frameIndex} onSeek={onSeek} />
       </div>
     </section>
   )

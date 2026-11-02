@@ -1,0 +1,35 @@
+{
+  "name": "heatsy-body-model",
+  "license": "CC-BY-SA-4.0",
+  "app": { "name": "Heatsy", "version": "1.0", "build": "1" },
+  "files": [
+    {
+      "path": "model/body_superficial.app5m.glb",
+      "bytes": 4357304,
+      "sha256": "ce9859de013c2ee9713dbe3158275208b57be1b4ff31957eca87195b991c0ab1",
+      "origin": "Adapted from Z-Anatomy (Startup.blend), which is derived from BodyParts3D. The body mesh baked into the app's body.hbody, body_f.hbody and body_f_home.hbody.",
+      "license": "CC-BY-SA-4.0"
+    },
+    {
+      "path": "data/muscles.json",
+      "bytes": 51635,
+      "sha256": "da930e89dd70ac65b2a960df3bf20321898a5171716400a14dc620e6dedc9883",
+      "origin": "DDDEV LTD: the part, muscle and group vocabulary that decodes _PART_ID.",
+      "license": "CC-BY-SA-4.0"
+    },
+    {
+      "path": "data/za_map.json",
+      "bytes": 8109,
+      "sha256": "3a7466ea3537854db373364060f3428c3d1d22df683d1c4065a09519ade498af",
+      "origin": "DDDEV LTD: the map from each part to its Z-Anatomy object names.",
+      "license": "CC-BY-SA-4.0"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 20138,
+      "sha256": "28a9529c7d0bb4dc51f4bf5c116a3d16ef247a052f7591466768ddf563fd1cf5",
+      "origin": "https://creativecommons.org/licenses/by-sa/4.0/legalcode.txt",
+      "license": "Licence text"
+    }
+  ]
+}

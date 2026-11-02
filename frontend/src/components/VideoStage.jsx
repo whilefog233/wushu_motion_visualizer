@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { fileUrl } from '../api/client'
 import { drawSkeleton } from '../lib/drawSkeleton'
 import { frameAt, rowAt } from '../lib/frameData'
 import { IconPlay, IconVolume, IconFullscreen, IconTarget } from './Icons'
 import KeyFrames from './KeyFrames'
+import Skeleton3D from './Skeleton3D'
 
 const STAGES = { UPLOADING:'正在上传视频', QUEUED:'排队等待中', PREPARING:'正在准备视频', EXTRACTING_POSE:'正在提取人物姿态', CALCULATING_METRICS:'正在计算动作指标', ANALYZING_MUSCLE:'正在分析肌肉参与', ANALYZING_POWER_CHAIN:'正在分析发力链', SAVING_RESULTS:'正在保存结果' }
 const clock = (t) => Math.floor((t || 0) / 60).toString().padStart(2,'0') + ':' + Math.floor((t || 0) % 60).toString().padStart(2,'0')
@@ -20,14 +21,23 @@ function Player({ src, pose, metrics, result, onFrame, seekFrame }) {
   const count = pose?.frames?.length || result?.video?.frame_count || 0
   const frame = frameAt(time, fps, count)
 
+  // 跳转到目标帧的时间中心，避免 frame/fps 恰落在编码边界时回退到前一帧。
+  const seekToFrame = useCallback((targetFrame) => {
+    const video = videoRef.current
+    if (!video || !(fps > 0) || count <= 0) return
+    const clamped = Math.max(0, Math.min(count - 1, targetFrame))
+    const targetTime = (clamped + 0.5) / fps
+    video.currentTime = Math.min(targetTime, Number.isFinite(video.duration) ? video.duration : targetTime)
+  }, [count, fps])
+
   useEffect(() => {
     const video = videoRef.current
     if (!video || !seekFrame || !(fps > 0)) return
-    const seek = () => { video.currentTime = Math.max(0, Math.min(seekFrame.frame / fps, Number.isFinite(video.duration) ? video.duration : Infinity)) }
+    const seek = () => seekToFrame(seekFrame.frame)
     if (video.readyState >= 1) seek()
     else video.addEventListener('loadedmetadata', seek, { once:true })
     return () => video.removeEventListener('loadedmetadata', seek)
-  }, [seekFrame, fps])
+  }, [seekFrame, fps, seekToFrame])
 
   useEffect(() => {
     const video = videoRef.current, canvas = canvasRef.current
@@ -70,6 +80,7 @@ function Player({ src, pose, metrics, result, onFrame, seekFrame }) {
     catch { setError('当前浏览器无法进入全屏。') }
   }
   return <div className="player" ref={stageRef}>
+    <div className="video-row">
     <div className="video-viewport">
       <video ref={videoRef} src={src} playsInline preload="metadata" onClick={togglePlay}
         onLoadedMetadata={(e) => setDuration(Number.isFinite(e.currentTarget.duration) ? e.currentTarget.duration : 0)}
@@ -84,12 +95,16 @@ function Player({ src, pose, metrics, result, onFrame, seekFrame }) {
       {result && !pose?.frames?.length && <div className="video-notice">骨架数据不可用 · 原始视频仍可播放</div>}
       {error && <div className="video-notice" role="alert">{error}</div>}
     </div>
+    {pose?.hasWorld && (
+      <Skeleton3D worldFrames={pose.worldFrames} frameIndex={frame} visible={showSkel} />
+    )}
+    </div>
     <div className="player-controls">
       <button aria-label={playing ? '暂停' : '播放'} onClick={togglePlay}>{playing ? <span className="pause-icon">Ⅱ</span> : <IconPlay />}</button>
       <input aria-label="视频时间轴" type="range" min="0" max={duration || 1} step="0.001" value={Math.min(time,duration)} disabled={!duration} onChange={(e) => seek(Number(e.target.value))} style={{'--progress':(duration ? time / duration * 100 : 0) + '%'}} />
       <span className="player-time">{clock(time)} <span>/ {clock(duration)}</span></span>
-      <button aria-label="上一帧" disabled={!fps} onClick={() => seek((frame - 1) / fps)}>‹</button>
-      <button aria-label="下一帧" disabled={!fps} onClick={() => seek((frame + 1) / fps)}>›</button>
+      <button aria-label="上一帧" disabled={!fps} onClick={() => seekToFrame(frame - 1)}>‹</button>
+      <button aria-label="下一帧" disabled={!fps} onClick={() => seekToFrame(frame + 1)}>›</button>
       <select aria-label="播放速度" value={rate} onChange={(e) => { const v = Number(e.target.value); setRate(v); videoRef.current.playbackRate = v }}>
         {[.25,.5,1,1.5,2].map((v) => <option key={v} value={v}>{v}×</option>)}
       </select>

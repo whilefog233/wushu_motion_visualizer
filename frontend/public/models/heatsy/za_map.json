@@ -1,0 +1,380 @@
+{
+ "_doc": "Leaf id (data/muscles.json 'parts') -> Z-Anatomy base object names whose geometry forms it. Append '.l' / '.r' for the left / right mesh (exact spelling from out/za_objects.json, parentheses included).",
+ "version": 2,
+ "leaves": {
+  "sternocleidomastoid": [
+   "Sternocleidomastoid muscle"
+  ],
+  "scalenus_anterior": [
+   "Scalenus anterior muscle"
+  ],
+  "scalenus_medius": [
+   "Scalenus medius muscle"
+  ],
+  "scalenus_posterior": [
+   "Scalenus posterior muscle"
+  ],
+  "splenius_capitis": [
+   "Splenius capitis muscle"
+  ],
+  "splenius_cervicis": [
+   "Splenius colli muscle"
+  ],
+  "levator_scapulae": [
+   "Levator scapulae"
+  ],
+  "longus_colli": [
+   "Longus colli muscle"
+  ],
+  "longus_capitis": [
+   "Longus capitis muscle"
+  ],
+  "deltoid_anterior": [
+   "Clavicular part of deltoid muscle"
+  ],
+  "deltoid_lateral": [
+   "Acromial part of deltoid muscle"
+  ],
+  "deltoid_posterior": [
+   "Scapular spinal part of deltoid muscle"
+  ],
+  "supraspinatus": [
+   "Supraspinatus muscle"
+  ],
+  "infraspinatus": [
+   "Infraspinatus muscle"
+  ],
+  "teres_minor": [
+   "Teres minor muscle"
+  ],
+  "subscapularis": [
+   "Subscapularis muscle"
+  ],
+  "pectoralis_major_clavicular": [
+   "Clavicular head of pectoralis major muscle"
+  ],
+  "pectoralis_major_sternocostal": [
+   "Sternocostal head of pectoralis major muscle"
+  ],
+  "pectoralis_major_abdominal": [
+   "(Abdominal part of pectoralis major muscle)"
+  ],
+  "pectoralis_minor": [
+   "Pectoralis minor muscle"
+  ],
+  "subclavius": [
+   "Subclavius muscle"
+  ],
+  "serratus_anterior": [
+   "Serratus anterior muscle"
+  ],
+  "external_intercostals": [
+   "External intercostal muscles"
+  ],
+  "internal_intercostals": [
+   "Internal intercostal muscles"
+  ],
+  "innermost_intercostals": [
+   "Innermost intercostal muscles"
+  ],
+  "trapezius_upper": [
+   "Descending part of trapezius muscle"
+  ],
+  "trapezius_middle": [
+   "Transverse part of trapezius muscle"
+  ],
+  "trapezius_lower": [
+   "Ascending part of trapezius muscle"
+  ],
+  "latissimus_dorsi": [
+   "Latissimus dorsi muscle"
+  ],
+  "teres_major": [
+   "Teres major muscle"
+  ],
+  "rhomboid_major": [
+   "Rhomboid major muscle"
+  ],
+  "rhomboid_minor": [
+   "Rhomboid minor muscle"
+  ],
+  "serratus_posterior_superior": [
+   "Serratus posterior superior muscle"
+  ],
+  "serratus_posterior_inferior": [
+   "Serratus posterior inferior muscle"
+  ],
+  "semispinalis": [
+   "Semispinalis thoracis muscle",
+   "Semispinalis colli muscle"
+  ],
+  "iliocostalis": [
+   "Iliocostalis lumborum muscle",
+   "Iliocostalis thoracis muscle"
+  ],
+  "longissimus": [
+   "Longissimus thoracis muscle",
+   "Longissimus colli muscle",
+   "Longissimus capitis muscle"
+  ],
+  "spinalis": [
+   "Spinalis thoracis muscle",
+   "Spinalis colli muscle",
+   "Spinalis capitis muscle"
+  ],
+  "multifidus": [
+   "Multifidus lumborum muscle",
+   "Multifidus thoracis muscle",
+   "Multifidus colli muscle"
+  ],
+  "rotatores": [
+   "Rotatores"
+  ],
+  "quadratus_lumborum": [
+   "Quadratus lumborum muscle"
+  ],
+  "rectus_abdominis": [
+   "Rectus abdominis muscle"
+  ],
+  "external_oblique": [
+   "External abdominal oblique muscle"
+  ],
+  "internal_oblique": [
+   "Internal abdominal oblique muscle"
+  ],
+  "transversus_abdominis": [
+   "Transversus abdominis muscle"
+  ],
+  "psoas_major": [
+   "Psoas major"
+  ],
+  "iliacus": [
+   "Iliacus muscle"
+  ],
+  "sartorius": [
+   "Sartorius muscle"
+  ],
+  "gluteus_maximus": [
+   "Gluteus maximus muscle"
+  ],
+  "gluteus_medius": [
+   "Gluteus medius muscle"
+  ],
+  "gluteus_minimus": [
+   "Gluteus minimus muscle"
+  ],
+  "tensor_fasciae_latae": [
+   "Tensor fasciae latae"
+  ],
+  "piriformis": [
+   "Piriformis muscle"
+  ],
+  "gemellus_superior": [
+   "Superior gemellus muscle"
+  ],
+  "obturator_internus": [
+   "Obturator internus"
+  ],
+  "gemellus_inferior": [
+   "Inferior gemellus muscle"
+  ],
+  "obturator_externus": [
+   "Obturator externus"
+  ],
+  "quadratus_femoris": [
+   "Quadratus femoris muscle"
+  ],
+  "rectus_femoris": [
+   "Rectus femoris muscle"
+  ],
+  "vastus_lateralis": [
+   "Vastus lateralis muscle"
+  ],
+  "vastus_medialis": [
+   "Vastus medialis muscle"
+  ],
+  "vastus_intermedius": [
+   "Vastus intermedius muscle"
+  ],
+  "adductor_longus": [
+   "Adductor longus"
+  ],
+  "adductor_brevis": [
+   "Adductor brevis"
+  ],
+  "adductor_magnus": [
+   "Adductor magnus",
+   "(Adductor minimus)"
+  ],
+  "gracilis": [
+   "Gracilis muscle"
+  ],
+  "pectineus": [
+   "Pectineus muscle"
+  ],
+  "biceps_femoris_long": [
+   "Long head of biceps femoris"
+  ],
+  "biceps_femoris_short": [
+   "Short head of biceps femoris"
+  ],
+  "semitendinosus": [
+   "Semitendinosus muscle"
+  ],
+  "semimembranosus": [
+   "Semimembranosus muscle"
+  ],
+  "gastrocnemius_medial": [
+   "Medial head of gastrocnemius"
+  ],
+  "gastrocnemius_lateral": [
+   "Lateral head of gastrocnemius"
+  ],
+  "soleus": [
+   "Soleus muscle"
+  ],
+  "plantaris": [
+   "Plantaris muscle"
+  ],
+  "popliteus": [
+   "Popliteus muscle"
+  ],
+  "tibialis_posterior": [
+   "Tibialis posterior muscle"
+  ],
+  "flexor_digitorum_longus": [
+   "Flexor digitorum longus"
+  ],
+  "flexor_hallucis_longus": [
+   "Flexor hallucis longus"
+  ],
+  "tibialis_anterior": [
+   "Tibialis anterior muscle"
+  ],
+  "extensor_digitorum_longus": [
+   "Extensor digitorum longus"
+  ],
+  "extensor_hallucis_longus": [
+   "Extensor hallucis longus"
+  ],
+  "fibularis_longus": [
+   "Fibularis longus muscle"
+  ],
+  "fibularis_brevis": [
+   "Fibularis brevis muscle"
+  ],
+  "fibularis_tertius": [
+   "Fibularis tertius muscle"
+  ],
+  "biceps_brachii_long": [
+   "Long head of biceps brachii"
+  ],
+  "biceps_brachii_short": [
+   "Short head of biceps brachii"
+  ],
+  "brachialis": [
+   "Brachialis muscle"
+  ],
+  "coracobrachialis": [
+   "Coracobrachialis muscle"
+  ],
+  "triceps_long": [
+   "Long head of triceps brachii"
+  ],
+  "triceps_lateral": [
+   "Lateral head of triceps brachii"
+  ],
+  "triceps_medial": [
+   "Medial head of triceps brachii"
+  ],
+  "anconeus": [
+   "Anconeus muscle"
+  ],
+  "brachioradialis": [
+   "Brachioradialis muscle"
+  ],
+  "pronator_teres_humeral": [
+   "Superficial head of pronator teres"
+  ],
+  "pronator_teres_ulnar": [
+   "Deep head of pronator teres"
+  ],
+  "flexor_carpi_radialis": [
+   "Flexor carpi radialis"
+  ],
+  "palmaris_longus": [
+   "Palmaris longus muscle"
+  ],
+  "flexor_carpi_ulnaris_humeral": [
+   "Humeral head of flexor carpi ulnaris"
+  ],
+  "flexor_carpi_ulnaris_ulnar": [
+   "Ulnar head of flexor carpi ulnaris"
+  ],
+  "flexor_digitorum_superficialis_humeroulnar": [
+   "Humero-ulnar head of flexor digitorum superficialis"
+  ],
+  "flexor_digitorum_superficialis_radial": [
+   "Radial head of flexor digitorum superficialis"
+  ],
+  "flexor_digitorum_profundus": [
+   "Flexor digitorum profundus"
+  ],
+  "flexor_pollicis_longus": [
+   "Flexor pollicis longus"
+  ],
+  "pronator_quadratus": [
+   "Pronator quadratus"
+  ],
+  "extensor_carpi_radialis_longus": [
+   "Extensor carpi radialis longus"
+  ],
+  "extensor_carpi_radialis_brevis": [
+   "Extensor carpi radialis brevis"
+  ],
+  "extensor_digitorum": [
+   "Extensor digitorum"
+  ],
+  "extensor_digiti_minimi": [
+   "Extensor digiti minimi"
+  ],
+  "extensor_carpi_ulnaris_humeral": [
+   "Humeral head of extensor carpi ulnaris"
+  ],
+  "extensor_carpi_ulnaris_ulnar": [
+   "Ulnar head of extensor carpi ulnaris"
+  ],
+  "supinator": [
+   "Supinator"
+  ],
+  "abductor_pollicis_longus": [
+   "Abductor pollicis longus"
+  ],
+  "extensor_pollicis_brevis": [
+   "Extensor pollicis brevis"
+  ],
+  "extensor_pollicis_longus": [
+   "Extensor pollicis longus"
+  ],
+  "extensor_indicis": [
+   "Extensor indicis"
+  ],
+  "thenar_muscles": [
+   "Abductor pollicis brevis",
+   "Superficial head of flexor pollicis brevis",
+   "Deep head of flexor pollicis brevis",
+   "Opponens pollicis muscle",
+   "Oblique head of adductor pollicis",
+   "Transverse head of adductor pollicis"
+  ],
+  "hypothenar_muscles": [
+   "Abductor digiti minimi of hand",
+   "Flexor digiti minimi of hand",
+   "Opponens digiti minimi muscle of hand"
+  ],
+  "hand_interossei": [
+   "Dorsal interossei muscles of hand",
+   "Palmar interossei muscles"
+  ]
+ }
+}
