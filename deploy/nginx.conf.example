@@ -1,0 +1,31 @@
+# /etc/nginx/conf.d/kungfu.conf
+# 外部只通过 Nginx HTTPS 访问，API 本身只监听 127.0.0.1:8000
+
+server {
+    listen 80;
+    server_name kungfu-api.example.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name kungfu-api.example.com;
+
+    # SSL 证书（用 certbot 申请后路径替换）
+    ssl_certificate     /etc/letsencrypt/live/kungfu-api.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/kungfu-api.example.com/privkey.pem;
+
+    client_max_body_size 200M;
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # 分析任务可能持续几分钟，关闭超时
+        proxy_read_timeout 600s;
+        proxy_send_timeout 600s;
+    }
+}

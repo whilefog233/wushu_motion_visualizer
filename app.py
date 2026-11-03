@@ -946,12 +946,65 @@ def _render_technique_analysis(analysis_id: str) -> None:
     _render_window_detail(windows[labels.index(selected_label)])
 
 
+def _render_ai_coach(analysis_id: str) -> None:
+    """V4 AI 教练解读区块：本地评分 + LLM 翻译（AI 不可用时降级到本地评分）。"""
+    from src.coach.ai_coach import generate_coach_interpretation, load_coach_interpretation
+
+    render_section_label("AI 教练解读 · V4")
+    render_panel_start()
+
+    existing = load_coach_interpretation(analysis_id)
+    if existing is None:
+        st.info("还没有 AI 教练解读。点击下方按钮生成（基于 V3 诊断 + 本地评分）。")
+        if st.button("生成 AI 教练解读", type="primary"):
+            with st.spinner("正在分析动作数据并生成教练解读..."):
+                existing = generate_coach_interpretation(analysis_id, force=True)
+                st.rerun()
+        render_panel_end()
+        return
+
+    # 本地评分
+    score = existing.get("score", {})
+    if score.get("total_score") is not None:
+        st.metric("总分", f"{score['total_score']:.0f} / 100")
+        if score.get("is_experimental"):
+            st.warning("当前没有专家模板，评分属于基于个人基线和结构规则的实验性估计，不能代表权威标准分数。")
+
+        cols = st.columns(4)
+        for i, dim in enumerate(score.get("dimensions", [])[:4]):
+            cols[i % 4].metric(dim["name"], f"{dim['score']:.0f} / {dim['max_score']}")
+
+    # LLM 解读
+    llm = existing.get("llm_interpretation")
+    if llm:
+        st.markdown(f"**本次总评**：{llm.get('overall_summary', '')}")
+        if llm.get("priority_drill"):
+            st.info(f"**本轮最重要的一件事**：{llm['priority_drill']}")
+        if llm.get("training_advice"):
+            st.markdown(f"**下一轮怎么练**：{llm['training_advice']}")
+        if llm.get("standard_action"):
+            st.markdown(f"**标准动作应该怎样做**：{llm['standard_action']}")
+        with st.expander("查看原始数据证据"):
+            st.json(score)
+    elif existing.get("llm_error"):
+        st.warning(f"AI 教练暂时不可用：{existing['llm_error']}。以下是本地评分结果。")
+
+    # 重新生成按钮
+    if st.button("重新生成 AI 解读"):
+        with st.spinner("重新生成中..."):
+            generate_coach_interpretation(analysis_id, force=True)
+            st.rerun()
+
+    render_panel_end()
+
+
 def _render_analysis_result(result) -> None:
     total_frames = result.frame_count
     fps = result.fps
     metrics_df: pd.DataFrame = result.metrics_df
 
     _render_technique_analysis(result.analysis_id)
+    _render_ai_coach(result.analysis_id)
 
     render_section_label("概览")
     metric_cols = st.columns(4)

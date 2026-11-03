@@ -5,6 +5,7 @@ __pycache__/
 *.pyd
 
 .DS_Store
+**/._*
 Thumbs.db
 .idea/
 .vscode/
@@ -15,6 +16,11 @@ Thumbs.db
 venv/
 env/
 
+# 前端依赖与构建产物
+frontend/node_modules/
+frontend/dist/
+
+# 运行数据（保留目录占位）
 data/input/**
 !data/input/.gitkeep
 data/output/**
@@ -23,9 +29,7 @@ data/analyses/**
 !data/analyses/.gitkeep
 data/cache/**
 !data/cache/.gitkeep
-
-outputs/muscle_visualized/**
-!outputs/muscle_visualized/.gitkeep
+data/api_uploads/**
 
 *.log
 *.zip
@@ -34,3 +38,5 @@ outputs/muscle_visualized/**
 *.mov
 *.mkv
 *.webm
+
+docs/ui-verification/*.png

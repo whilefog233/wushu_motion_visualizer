@@ -1,0 +1,18 @@
+[Unit]
+Description=Kungfu V3 Analysis API
+After=network.target
+
+[Service]
+Type=simple
+User=kungfu
+WorkingDirectory=/opt/kungfu
+Environment=KUNGFU_API_KEY=请替换成随机长密钥
+Environment=KUNGFU_CORS_ORIGIN=https://kungfu-v3-wushu.hybrid-j9y56-1505.chatgpt.site
+Environment=KUNGFU_MAX_CONCURRENT=1
+Environment=KUNGFU_MAX_UPLOAD_MB=200
+ExecStart=/opt/kungfu/venv/bin/python -m uvicorn api.main:app --host 127.0.0.1 --port 8000
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

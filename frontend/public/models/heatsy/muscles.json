@@ -1,0 +1,2643 @@
+{
+ "_doc": "Muscle vocabulary v2 shared by the body generator, the engine and exercise data. Three levels: part (leaf) -> muscle -> group. Encoding: vertex attribute _PART_ID = 1 + 2*leaf_index + side (side: 0 = L, 1 = R); 0 = none (head, tendon-only, bone). leaf_index is the position in the 'parts' array: new leaves are only appended, never reordered or removed, or baked models break. Muscle and group are looked up from the leaf (parts[i].muscle -> muscles[].group). A muscle without 'parts' is its own single leaf (parts entry with id == muscle id, no names: inherits the muscle's latin/names/layer); a split muscle's leaves carry their own latin/names and may override 'layer'. v2 replaces v1's _MUSCLE_ID/_DEEP_ID: every muscle mesh carries its own _PART_ID, and 'layer' decides what is surface vs x-ray: superficial = forms the outer surface of a skinless ecorche; intermediate = partly exposed or directly under the superficial layer; deep = fully covered. 'zones' are sub-regions without their own geometry: range = [from, to] as a fraction of the muscle's length measured from its top (proximal/cranial) end along its long axis; referenced as '<muscle>:<zone>'. Geometry source per leaf: data/za_map.json (Z-Anatomy object names, '.l'/'.r' appended per side). Current max code = 238 (fits float32 exactly; exceeds uint8 once there are more than 127 leaves). Names: en only for now; localization adds keys without schema change.",
+ "version": 2,
+ "groups": [
+  {
+   "id": "neck",
+   "names": {
+    "en": {
+     "primary": "Neck",
+     "aliases": [
+      "Neck Muscles"
+     ]
+    }
+   }
+  },
+  {
+   "id": "shoulders",
+   "names": {
+    "en": {
+     "primary": "Shoulders",
+     "aliases": [
+      "Delts",
+      "Shoulder",
+      "Rotator Cuff"
+     ]
+    }
+   }
+  },
+  {
+   "id": "chest",
+   "names": {
+    "en": {
+     "primary": "Chest",
+     "aliases": [
+      "Pecs",
+      "Pectorals"
+     ]
+    }
+   }
+  },
+  {
+   "id": "upper_back",
+   "names": {
+    "en": {
+     "primary": "Upper Back",
+     "aliases": [
+      "Back",
+      "Lats",
+      "Traps",
+      "Mid Back"
+     ]
+    }
+   }
+  },
+  {
+   "id": "lower_back",
+   "names": {
+    "en": {
+     "primary": "Lower Back",
+     "aliases": [
+      "Low Back",
+      "Spinal Erectors",
+      "Erectors"
+     ]
+    }
+   }
+  },
+  {
+   "id": "abs",
+   "names": {
+    "en": {
+     "primary": "Abs",
+     "aliases": [
+      "Abdominals",
+      "Core",
+      "Six Pack",
+      "Stomach",
+      "Midsection"
+     ]
+    }
+   }
+  },
+  {
+   "id": "arms_front",
+   "names": {
+    "en": {
+     "primary": "Biceps",
+     "aliases": [
+      "Front of Arm",
+      "Upper Arm Flexors",
+      "Arms"
+     ]
+    }
+   }
+  },
+  {
+   "id": "arms_back",
+   "names": {
+    "en": {
+     "primary": "Triceps",
+     "aliases": [
+      "Back of Arm",
+      "Tris",
+      "Arms"
+     ]
+    }
+   }
+  },
+  {
+   "id": "forearms",
+   "names": {
+    "en": {
+     "primary": "Forearms",
+     "aliases": [
+      "Grip",
+      "Forearm"
+     ]
+    }
+   }
+  },
+  {
+   "id": "hands",
+   "names": {
+    "en": {
+     "primary": "Hands",
+     "aliases": [
+      "Hand Muscles",
+      "Grip",
+      "Fingers"
+     ]
+    }
+   }
+  },
+  {
+   "id": "glutes",
+   "names": {
+    "en": {
+     "primary": "Glutes",
+     "aliases": [
+      "Butt",
+      "Hips",
+      "Gluteals",
+      "Booty",
+      "Hip Abductors"
+     ]
+    }
+   }
+  },
+  {
+   "id": "hip_flexors",
+   "names": {
+    "en": {
+     "primary": "Hip Flexors",
+     "aliases": [
+      "Iliopsoas",
+      "Hip Flexor"
+     ]
+    }
+   }
+  },
+  {
+   "id": "quads",
+   "names": {
+    "en": {
+     "primary": "Quadriceps",
+     "aliases": [
+      "Quads",
+      "Front of Thigh",
+      "Thighs"
+     ]
+    }
+   }
+  },
+  {
+   "id": "adductors",
+   "names": {
+    "en": {
+     "primary": "Adductors",
+     "aliases": [
+      "Inner Thigh",
+      "Groin",
+      "Adductor"
+     ]
+    }
+   }
+  },
+  {
+   "id": "hamstrings",
+   "names": {
+    "en": {
+     "primary": "Hamstrings",
+     "aliases": [
+      "Hams",
+      "Back of Thigh"
+     ]
+    }
+   }
+  },
+  {
+   "id": "calves",
+   "names": {
+    "en": {
+     "primary": "Calves",
+     "aliases": [
+      "Calf",
+      "Lower Leg"
+     ]
+    }
+   }
+  },
+  {
+   "id": "shins",
+   "names": {
+    "en": {
+     "primary": "Shins",
+     "aliases": [
+      "Shin",
+      "Front of Lower Leg",
+      "Tibialis",
+      "Peroneals"
+     ]
+    }
+   }
+  }
+ ],
+ "muscles": [
+  {
+   "id": "sternocleidomastoid",
+   "group": "neck",
+   "latin": "Musculus sternocleidomastoideus",
+   "names": {
+    "en": {
+     "primary": "Sternocleidomastoid",
+     "aliases": [
+      "SCM",
+      "Sternomastoid"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Flexes the neck; rotates the head to the opposite side"
+  },
+  {
+   "id": "scalenes",
+   "group": "neck",
+   "latin": "Musculi scaleni",
+   "names": {
+    "en": {
+     "primary": "Scalenes",
+     "aliases": [
+      "Scalene Muscles"
+     ]
+    }
+   },
+   "layer": "intermediate",
+   "action": "Laterally flexes the neck; elevates the first two ribs",
+   "parts": [
+    "scalenus_anterior",
+    "scalenus_medius",
+    "scalenus_posterior"
+   ]
+  },
+  {
+   "id": "splenius_capitis",
+   "group": "neck",
+   "latin": "Musculus splenius capitis",
+   "names": {
+    "en": {
+     "primary": "Splenius Capitis",
+     "aliases": [
+      "Splenius",
+      "Neck Extensors"
+     ]
+    }
+   },
+   "layer": "intermediate",
+   "action": "Extends and rotates the head to the same side"
+  },
+  {
+   "id": "splenius_cervicis",
+   "group": "neck",
+   "latin": "Musculus splenius cervicis",
+   "names": {
+    "en": {
+     "primary": "Splenius Cervicis",
+     "aliases": [
+      "Splenius Colli",
+      "Neck Extensors"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Extends and rotates the neck to the same side"
+  },
+  {
+   "id": "levator_scapulae",
+   "group": "neck",
+   "latin": "Musculus levator scapulae",
+   "names": {
+    "en": {
+     "primary": "Levator Scapulae",
+     "aliases": [
+      "Levator"
+     ]
+    }
+   },
+   "layer": "intermediate",
+   "action": "Elevates and downwardly rotates the scapula; laterally flexes the neck"
+  },
+  {
+   "id": "longus_colli",
+   "group": "neck",
+   "latin": "Musculus longus colli",
+   "names": {
+    "en": {
+     "primary": "Longus Colli",
+     "aliases": [
+      "Deep Neck Flexors"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Flexes the cervical spine"
+  },
+  {
+   "id": "longus_capitis",
+   "group": "neck",
+   "latin": "Musculus longus capitis",
+   "names": {
+    "en": {
+     "primary": "Longus Capitis",
+     "aliases": [
+      "Deep Neck Flexors"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Flexes the head and upper neck"
+  },
+  {
+   "id": "deltoid",
+   "group": "shoulders",
+   "latin": "Musculus deltoideus",
+   "names": {
+    "en": {
+     "primary": "Deltoid",
+     "aliases": [
+      "Delts",
+      "Shoulders",
+      "Shoulder Muscle"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Abducts, flexes and extends the arm at the shoulder",
+   "parts": [
+    "deltoid_anterior",
+    "deltoid_lateral",
+    "deltoid_posterior"
+   ]
+  },
+  {
+   "id": "supraspinatus",
+   "group": "shoulders",
+   "latin": "Musculus supraspinatus",
+   "names": {
+    "en": {
+     "primary": "Supraspinatus",
+     "aliases": [
+      "Rotator Cuff"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Initiates arm abduction; stabilizes the humeral head"
+  },
+  {
+   "id": "infraspinatus",
+   "group": "shoulders",
+   "latin": "Musculus infraspinatus",
+   "names": {
+    "en": {
+     "primary": "Infraspinatus",
+     "aliases": [
+      "Rotator Cuff"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Externally rotates the arm; stabilizes the shoulder"
+  },
+  {
+   "id": "teres_minor",
+   "group": "shoulders",
+   "latin": "Musculus teres minor",
+   "names": {
+    "en": {
+     "primary": "Teres Minor",
+     "aliases": [
+      "Rotator Cuff"
+     ]
+    }
+   },
+   "layer": "intermediate",
+   "action": "Externally rotates the arm; stabilizes the shoulder"
+  },
+  {
+   "id": "subscapularis",
+   "group": "shoulders",
+   "latin": "Musculus subscapularis",
+   "names": {
+    "en": {
+     "primary": "Subscapularis",
+     "aliases": [
+      "Rotator Cuff"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Internally rotates the arm; stabilizes the shoulder"
+  },
+  {
+   "id": "pectoralis_major",
+   "group": "chest",
+   "latin": "Musculus pectoralis major",
+   "names": {
+    "en": {
+     "primary": "Pectoralis Major",
+     "aliases": [
+      "Chest",
+      "Pecs",
+      "Pec Major"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Adducts, internally rotates and flexes the arm; horizontal adduction",
+   "parts": [
+    "pectoralis_major_clavicular",
+    "pectoralis_major_sternocostal",
+    "pectoralis_major_abdominal"
+   ]
+  },
+  {
+   "id": "pectoralis_minor",
+   "group": "chest",
+   "latin": "Musculus pectoralis minor",
+   "names": {
+    "en": {
+     "primary": "Pectoralis Minor",
+     "aliases": [
+      "Pec Minor"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Depresses and protracts the scapula"
+  },
+  {
+   "id": "subclavius",
+   "group": "chest",
+   "latin": "Musculus subclavius",
+   "names": {
+    "en": {
+     "primary": "Subclavius",
+     "aliases": []
+    }
+   },
+   "layer": "deep",
+   "action": "Depresses and stabilizes the clavicle"
+  },
+  {
+   "id": "serratus_anterior",
+   "group": "chest",
+   "latin": "Musculus serratus anterior",
+   "names": {
+    "en": {
+     "primary": "Serratus Anterior",
+     "aliases": [
+      "Serratus",
+      "Boxer's Muscle"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Protracts and upwardly rotates the scapula; holds it to the ribcage"
+  },
+  {
+   "id": "intercostals",
+   "group": "chest",
+   "latin": "Musculi intercostales",
+   "names": {
+    "en": {
+     "primary": "Intercostals",
+     "aliases": [
+      "Rib Muscles"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Move the ribs during breathing; stiffen the chest wall",
+   "parts": [
+    "external_intercostals",
+    "internal_intercostals",
+    "innermost_intercostals"
+   ]
+  },
+  {
+   "id": "trapezius",
+   "group": "upper_back",
+   "latin": "Musculus trapezius",
+   "names": {
+    "en": {
+     "primary": "Trapezius",
+     "aliases": [
+      "Traps"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Elevates, retracts, depresses and upwardly rotates the scapula",
+   "parts": [
+    "trapezius_upper",
+    "trapezius_middle",
+    "trapezius_lower"
+   ]
+  },
+  {
+   "id": "latissimus_dorsi",
+   "group": "upper_back",
+   "latin": "Musculus latissimus dorsi",
+   "names": {
+    "en": {
+     "primary": "Latissimus Dorsi",
+     "aliases": [
+      "Lats",
+      "Lat",
+      "Wings"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Extends, adducts and internally rotates the arm"
+  },
+  {
+   "id": "teres_major",
+   "group": "upper_back",
+   "latin": "Musculus teres major",
+   "names": {
+    "en": {
+     "primary": "Teres Major",
+     "aliases": [
+      "Lat's Little Helper"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Extends, adducts and internally rotates the arm"
+  },
+  {
+   "id": "rhomboids",
+   "group": "upper_back",
+   "latin": "Musculi rhomboidei",
+   "names": {
+    "en": {
+     "primary": "Rhomboids",
+     "aliases": [
+      "Rhomboid",
+      "Mid Back"
+     ]
+    }
+   },
+   "layer": "intermediate",
+   "action": "Retract and elevate the scapula; rotate it downward",
+   "parts": [
+    "rhomboid_major",
+    "rhomboid_minor"
+   ]
+  },
+  {
+   "id": "serratus_posterior_superior",
+   "group": "upper_back",
+   "latin": "Musculus serratus posterior superior",
+   "names": {
+    "en": {
+     "primary": "Serratus Posterior Superior",
+     "aliases": []
+    }
+   },
+   "layer": "deep",
+   "action": "Elevates the upper ribs"
+  },
+  {
+   "id": "serratus_posterior_inferior",
+   "group": "upper_back",
+   "latin": "Musculus serratus posterior inferior",
+   "names": {
+    "en": {
+     "primary": "Serratus Posterior Inferior",
+     "aliases": []
+    }
+   },
+   "layer": "deep",
+   "action": "Depresses the lower ribs"
+  },
+  {
+   "id": "semispinalis",
+   "group": "upper_back",
+   "latin": "Musculus semispinalis",
+   "names": {
+    "en": {
+     "primary": "Semispinalis",
+     "aliases": [
+      "Transversospinalis"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Extends and rotates the thoracic and cervical spine"
+  },
+  {
+   "id": "erector_spinae",
+   "group": "lower_back",
+   "latin": "Musculus erector spinae",
+   "names": {
+    "en": {
+     "primary": "Erector Spinae",
+     "aliases": [
+      "Spinal Erectors",
+      "Erectors",
+      "Lower Back",
+      "Back Extensors",
+      "Sacrospinalis"
+     ]
+    }
+   },
+   "layer": "intermediate",
+   "action": "Extends and laterally flexes the spine; resists spinal flexion",
+   "parts": [
+    "iliocostalis",
+    "longissimus",
+    "spinalis"
+   ]
+  },
+  {
+   "id": "multifidus",
+   "group": "lower_back",
+   "latin": "Musculus multifidus",
+   "names": {
+    "en": {
+     "primary": "Multifidus",
+     "aliases": [
+      "Multifidi",
+      "Deep Back Muscles"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Stabilizes and extends the vertebrae segment by segment"
+  },
+  {
+   "id": "rotatores",
+   "group": "lower_back",
+   "latin": "Musculi rotatores",
+   "names": {
+    "en": {
+     "primary": "Rotatores",
+     "aliases": [
+      "Rotator Muscles of Spine"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Rotate and stabilize the vertebrae"
+  },
+  {
+   "id": "quadratus_lumborum",
+   "group": "lower_back",
+   "latin": "Musculus quadratus lumborum",
+   "names": {
+    "en": {
+     "primary": "Quadratus Lumborum",
+     "aliases": [
+      "QL"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Laterally flexes the lumbar spine; hikes the hip; stabilizes the pelvis"
+  },
+  {
+   "id": "rectus_abdominis",
+   "group": "abs",
+   "latin": "Musculus rectus abdominis",
+   "names": {
+    "en": {
+     "primary": "Rectus Abdominis",
+     "aliases": [
+      "Abs",
+      "Six Pack",
+      "Abdominals"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Flexes the trunk; posteriorly tilts the pelvis",
+   "zones": [
+    {
+     "id": "upper",
+     "range": [
+      0,
+      0.5
+     ],
+     "names": {
+      "en": {
+       "primary": "Upper Abs",
+       "aliases": [
+        "Upper Six Pack"
+       ]
+      }
+     }
+    },
+    {
+     "id": "lower",
+     "range": [
+      0.5,
+      1
+     ],
+     "names": {
+      "en": {
+       "primary": "Lower Abs",
+       "aliases": [
+        "Lower Belly"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "external_oblique",
+   "group": "abs",
+   "latin": "Musculus obliquus externus abdominis",
+   "names": {
+    "en": {
+     "primary": "External Oblique",
+     "aliases": [
+      "Obliques",
+      "Side Abs",
+      "Love Handles"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Rotates the trunk to the opposite side; laterally flexes and flexes the trunk"
+  },
+  {
+   "id": "internal_oblique",
+   "group": "abs",
+   "latin": "Musculus obliquus internus abdominis",
+   "names": {
+    "en": {
+     "primary": "Internal Oblique",
+     "aliases": [
+      "Obliques",
+      "Inner Obliques"
+     ]
+    }
+   },
+   "layer": "intermediate",
+   "action": "Rotates the trunk to the same side; laterally flexes and flexes the trunk"
+  },
+  {
+   "id": "transversus_abdominis",
+   "group": "abs",
+   "latin": "Musculus transversus abdominis",
+   "names": {
+    "en": {
+     "primary": "Transversus Abdominis",
+     "aliases": [
+      "TVA",
+      "Transverse Abs",
+      "Deep Core"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Compresses the abdomen; braces the trunk"
+  },
+  {
+   "id": "iliopsoas",
+   "group": "hip_flexors",
+   "latin": "Musculus iliopsoas",
+   "names": {
+    "en": {
+     "primary": "Iliopsoas",
+     "aliases": [
+      "Hip Flexors",
+      "Psoas"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Flexes the hip; flexes the lumbar spine toward the thigh",
+   "parts": [
+    "psoas_major",
+    "iliacus"
+   ]
+  },
+  {
+   "id": "sartorius",
+   "group": "hip_flexors",
+   "latin": "Musculus sartorius",
+   "names": {
+    "en": {
+     "primary": "Sartorius",
+     "aliases": [
+      "Tailor's Muscle"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Flexes, abducts and externally rotates the hip; flexes the knee"
+  },
+  {
+   "id": "gluteus_maximus",
+   "group": "glutes",
+   "latin": "Musculus gluteus maximus",
+   "names": {
+    "en": {
+     "primary": "Gluteus Maximus",
+     "aliases": [
+      "Glutes",
+      "Glute Max",
+      "Butt"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Extends and externally rotates the hip"
+  },
+  {
+   "id": "gluteus_medius",
+   "group": "glutes",
+   "latin": "Musculus gluteus medius",
+   "names": {
+    "en": {
+     "primary": "Gluteus Medius",
+     "aliases": [
+      "Glute Med",
+      "Side Glutes",
+      "Upper Glutes"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Abducts the hip; stabilizes the pelvis in single-leg stance"
+  },
+  {
+   "id": "gluteus_minimus",
+   "group": "glutes",
+   "latin": "Musculus gluteus minimus",
+   "names": {
+    "en": {
+     "primary": "Gluteus Minimus",
+     "aliases": [
+      "Glute Min"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Abducts and internally rotates the hip; stabilizes the pelvis"
+  },
+  {
+   "id": "tensor_fasciae_latae",
+   "group": "glutes",
+   "latin": "Musculus tensor fasciae latae",
+   "names": {
+    "en": {
+     "primary": "Tensor Fasciae Latae",
+     "aliases": [
+      "TFL"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Abducts, flexes and internally rotates the hip; tenses the IT band"
+  },
+  {
+   "id": "piriformis",
+   "group": "glutes",
+   "latin": "Musculus piriformis",
+   "names": {
+    "en": {
+     "primary": "Piriformis",
+     "aliases": [
+      "Deep Hip Rotators"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Externally rotates the extended hip; abducts the flexed hip"
+  },
+  {
+   "id": "gemellus_superior",
+   "group": "glutes",
+   "latin": "Musculus gemellus superior",
+   "names": {
+    "en": {
+     "primary": "Superior Gemellus",
+     "aliases": [
+      "Gemelli",
+      "Deep Hip Rotators"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Externally rotates the hip"
+  },
+  {
+   "id": "obturator_internus",
+   "group": "glutes",
+   "latin": "Musculus obturatorius internus",
+   "names": {
+    "en": {
+     "primary": "Obturator Internus",
+     "aliases": [
+      "Deep Hip Rotators"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Externally rotates the hip"
+  },
+  {
+   "id": "gemellus_inferior",
+   "group": "glutes",
+   "latin": "Musculus gemellus inferior",
+   "names": {
+    "en": {
+     "primary": "Inferior Gemellus",
+     "aliases": [
+      "Gemelli",
+      "Deep Hip Rotators"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Externally rotates the hip"
+  },
+  {
+   "id": "obturator_externus",
+   "group": "glutes",
+   "latin": "Musculus obturatorius externus",
+   "names": {
+    "en": {
+     "primary": "Obturator Externus",
+     "aliases": [
+      "Deep Hip Rotators"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Externally rotates the hip"
+  },
+  {
+   "id": "quadratus_femoris",
+   "group": "glutes",
+   "latin": "Musculus quadratus femoris",
+   "names": {
+    "en": {
+     "primary": "Quadratus Femoris",
+     "aliases": [
+      "Deep Hip Rotators"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Externally rotates the hip"
+  },
+  {
+   "id": "rectus_femoris",
+   "group": "quads",
+   "latin": "Musculus rectus femoris",
+   "names": {
+    "en": {
+     "primary": "Rectus Femoris",
+     "aliases": [
+      "Quads",
+      "Quad"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Extends the knee; flexes the hip"
+  },
+  {
+   "id": "vastus_lateralis",
+   "group": "quads",
+   "latin": "Musculus vastus lateralis",
+   "names": {
+    "en": {
+     "primary": "Vastus Lateralis",
+     "aliases": [
+      "Quads",
+      "Outer Quad",
+      "Quad Sweep"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Extends the knee"
+  },
+  {
+   "id": "vastus_medialis",
+   "group": "quads",
+   "latin": "Musculus vastus medialis",
+   "names": {
+    "en": {
+     "primary": "Vastus Medialis",
+     "aliases": [
+      "Quads",
+      "Inner Quad",
+      "Teardrop"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Extends the knee; stabilizes the patella",
+   "zones": [
+    {
+     "id": "vmo",
+     "range": [
+      0.65,
+      1
+     ],
+     "names": {
+      "en": {
+       "primary": "Vastus Medialis Oblique",
+       "aliases": [
+        "VMO",
+        "Teardrop"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "vastus_intermedius",
+   "group": "quads",
+   "latin": "Musculus vastus intermedius",
+   "names": {
+    "en": {
+     "primary": "Vastus Intermedius",
+     "aliases": [
+      "Quads"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Extends the knee"
+  },
+  {
+   "id": "adductor_longus",
+   "group": "adductors",
+   "latin": "Musculus adductor longus",
+   "names": {
+    "en": {
+     "primary": "Adductor Longus",
+     "aliases": [
+      "Adductors",
+      "Groin"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Adducts and flexes the hip"
+  },
+  {
+   "id": "adductor_brevis",
+   "group": "adductors",
+   "latin": "Musculus adductor brevis",
+   "names": {
+    "en": {
+     "primary": "Adductor Brevis",
+     "aliases": [
+      "Adductors"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Adducts the hip"
+  },
+  {
+   "id": "adductor_magnus",
+   "group": "adductors",
+   "latin": "Musculus adductor magnus",
+   "names": {
+    "en": {
+     "primary": "Adductor Magnus",
+     "aliases": [
+      "Adductors",
+      "Inner Thigh"
+     ]
+    }
+   },
+   "layer": "intermediate",
+   "action": "Adducts the hip; its posterior part extends the hip"
+  },
+  {
+   "id": "gracilis",
+   "group": "adductors",
+   "latin": "Musculus gracilis",
+   "names": {
+    "en": {
+     "primary": "Gracilis",
+     "aliases": [
+      "Adductors",
+      "Inner Thigh"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Adducts the hip; flexes the knee"
+  },
+  {
+   "id": "pectineus",
+   "group": "adductors",
+   "latin": "Musculus pectineus",
+   "names": {
+    "en": {
+     "primary": "Pectineus",
+     "aliases": [
+      "Adductors",
+      "Groin"
+     ]
+    }
+   },
+   "layer": "intermediate",
+   "action": "Adducts and flexes the hip"
+  },
+  {
+   "id": "biceps_femoris",
+   "group": "hamstrings",
+   "latin": "Musculus biceps femoris",
+   "names": {
+    "en": {
+     "primary": "Biceps Femoris",
+     "aliases": [
+      "Hamstrings",
+      "Outer Hamstring"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Flexes the knee; long head extends the hip",
+   "parts": [
+    "biceps_femoris_long",
+    "biceps_femoris_short"
+   ]
+  },
+  {
+   "id": "semitendinosus",
+   "group": "hamstrings",
+   "latin": "Musculus semitendinosus",
+   "names": {
+    "en": {
+     "primary": "Semitendinosus",
+     "aliases": [
+      "Hamstrings",
+      "Inner Hamstring"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Flexes the knee; extends the hip"
+  },
+  {
+   "id": "semimembranosus",
+   "group": "hamstrings",
+   "latin": "Musculus semimembranosus",
+   "names": {
+    "en": {
+     "primary": "Semimembranosus",
+     "aliases": [
+      "Hamstrings",
+      "Inner Hamstring"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Flexes the knee; extends the hip"
+  },
+  {
+   "id": "gastrocnemius",
+   "group": "calves",
+   "latin": "Musculus gastrocnemius",
+   "names": {
+    "en": {
+     "primary": "Gastrocnemius",
+     "aliases": [
+      "Calves",
+      "Gastrocs",
+      "Calf"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Plantarflexes the ankle; flexes the knee",
+   "parts": [
+    "gastrocnemius_medial",
+    "gastrocnemius_lateral"
+   ]
+  },
+  {
+   "id": "soleus",
+   "group": "calves",
+   "latin": "Musculus soleus",
+   "names": {
+    "en": {
+     "primary": "Soleus",
+     "aliases": [
+      "Calves",
+      "Lower Calf"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Plantarflexes the ankle"
+  },
+  {
+   "id": "plantaris",
+   "group": "calves",
+   "latin": "Musculus plantaris",
+   "names": {
+    "en": {
+     "primary": "Plantaris",
+     "aliases": []
+    }
+   },
+   "layer": "deep",
+   "action": "Weakly assists plantarflexion and knee flexion"
+  },
+  {
+   "id": "popliteus",
+   "group": "calves",
+   "latin": "Musculus popliteus",
+   "names": {
+    "en": {
+     "primary": "Popliteus",
+     "aliases": []
+    }
+   },
+   "layer": "deep",
+   "action": "Unlocks the extended knee; internally rotates the tibia"
+  },
+  {
+   "id": "tibialis_posterior",
+   "group": "calves",
+   "latin": "Musculus tibialis posterior",
+   "names": {
+    "en": {
+     "primary": "Tibialis Posterior",
+     "aliases": [
+      "Tib Post"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Inverts the foot; plantarflexes the ankle; supports the arch"
+  },
+  {
+   "id": "flexor_digitorum_longus",
+   "group": "calves",
+   "latin": "Musculus flexor digitorum longus",
+   "names": {
+    "en": {
+     "primary": "Flexor Digitorum Longus",
+     "aliases": []
+    }
+   },
+   "layer": "deep",
+   "action": "Flexes the toes; plantarflexes the ankle"
+  },
+  {
+   "id": "flexor_hallucis_longus",
+   "group": "calves",
+   "latin": "Musculus flexor hallucis longus",
+   "names": {
+    "en": {
+     "primary": "Flexor Hallucis Longus",
+     "aliases": []
+    }
+   },
+   "layer": "deep",
+   "action": "Flexes the big toe; plantarflexes the ankle"
+  },
+  {
+   "id": "tibialis_anterior",
+   "group": "shins",
+   "latin": "Musculus tibialis anterior",
+   "names": {
+    "en": {
+     "primary": "Tibialis Anterior",
+     "aliases": [
+      "Shins",
+      "Tibialis",
+      "Tib Anterior"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Dorsiflexes the ankle; inverts the foot"
+  },
+  {
+   "id": "extensor_digitorum_longus",
+   "group": "shins",
+   "latin": "Musculus extensor digitorum longus",
+   "names": {
+    "en": {
+     "primary": "Extensor Digitorum Longus",
+     "aliases": [
+      "Toe Extensors"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Extends the toes; dorsiflexes the ankle"
+  },
+  {
+   "id": "extensor_hallucis_longus",
+   "group": "shins",
+   "latin": "Musculus extensor hallucis longus",
+   "names": {
+    "en": {
+     "primary": "Extensor Hallucis Longus",
+     "aliases": []
+    }
+   },
+   "layer": "intermediate",
+   "action": "Extends the big toe; dorsiflexes the ankle"
+  },
+  {
+   "id": "fibularis_longus",
+   "group": "shins",
+   "latin": "Musculus fibularis longus",
+   "names": {
+    "en": {
+     "primary": "Fibularis Longus",
+     "aliases": [
+      "Peroneus Longus",
+      "Peroneals"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Everts the foot; plantarflexes the ankle"
+  },
+  {
+   "id": "fibularis_brevis",
+   "group": "shins",
+   "latin": "Musculus fibularis brevis",
+   "names": {
+    "en": {
+     "primary": "Fibularis Brevis",
+     "aliases": [
+      "Peroneus Brevis",
+      "Peroneals"
+     ]
+    }
+   },
+   "layer": "intermediate",
+   "action": "Everts the foot"
+  },
+  {
+   "id": "fibularis_tertius",
+   "group": "shins",
+   "latin": "Musculus fibularis tertius",
+   "names": {
+    "en": {
+     "primary": "Fibularis Tertius",
+     "aliases": [
+      "Peroneus Tertius"
+     ]
+    }
+   },
+   "layer": "intermediate",
+   "action": "Dorsiflexes the ankle; everts the foot"
+  },
+  {
+   "id": "biceps_brachii",
+   "group": "arms_front",
+   "latin": "Musculus biceps brachii",
+   "names": {
+    "en": {
+     "primary": "Biceps",
+     "aliases": [
+      "Biceps Brachii",
+      "Bis",
+      "Guns"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Flexes the elbow; supinates the forearm; flexes the shoulder",
+   "parts": [
+    "biceps_brachii_long",
+    "biceps_brachii_short"
+   ]
+  },
+  {
+   "id": "brachialis",
+   "group": "arms_front",
+   "latin": "Musculus brachialis",
+   "names": {
+    "en": {
+     "primary": "Brachialis",
+     "aliases": []
+    }
+   },
+   "layer": "superficial",
+   "action": "Flexes the elbow in any forearm position"
+  },
+  {
+   "id": "coracobrachialis",
+   "group": "arms_front",
+   "latin": "Musculus coracobrachialis",
+   "names": {
+    "en": {
+     "primary": "Coracobrachialis",
+     "aliases": []
+    }
+   },
+   "layer": "intermediate",
+   "action": "Flexes and adducts the arm"
+  },
+  {
+   "id": "triceps_brachii",
+   "group": "arms_back",
+   "latin": "Musculus triceps brachii",
+   "names": {
+    "en": {
+     "primary": "Triceps",
+     "aliases": [
+      "Triceps Brachii",
+      "Tris"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Extends the elbow; long head extends the shoulder",
+   "parts": [
+    "triceps_long",
+    "triceps_lateral",
+    "triceps_medial"
+   ]
+  },
+  {
+   "id": "anconeus",
+   "group": "arms_back",
+   "latin": "Musculus anconeus",
+   "names": {
+    "en": {
+     "primary": "Anconeus",
+     "aliases": []
+    }
+   },
+   "layer": "superficial",
+   "action": "Assists elbow extension; stabilizes the elbow"
+  },
+  {
+   "id": "brachioradialis",
+   "group": "forearms",
+   "latin": "Musculus brachioradialis",
+   "names": {
+    "en": {
+     "primary": "Brachioradialis",
+     "aliases": [
+      "Forearm",
+      "Hammer Curl Muscle"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Flexes the elbow, strongest with a neutral grip"
+  },
+  {
+   "id": "pronator_teres",
+   "group": "forearms",
+   "latin": "Musculus pronator teres",
+   "names": {
+    "en": {
+     "primary": "Pronator Teres",
+     "aliases": [
+      "Forearm Flexors"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Pronates the forearm; assists elbow flexion",
+   "parts": [
+    "pronator_teres_humeral",
+    "pronator_teres_ulnar"
+   ]
+  },
+  {
+   "id": "flexor_carpi_radialis",
+   "group": "forearms",
+   "latin": "Musculus flexor carpi radialis",
+   "names": {
+    "en": {
+     "primary": "Flexor Carpi Radialis",
+     "aliases": [
+      "Wrist Flexors",
+      "Forearm Flexors"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Flexes and radially deviates the wrist"
+  },
+  {
+   "id": "palmaris_longus",
+   "group": "forearms",
+   "latin": "Musculus palmaris longus",
+   "names": {
+    "en": {
+     "primary": "Palmaris Longus",
+     "aliases": [
+      "Wrist Flexors",
+      "Forearm Flexors"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Flexes the wrist; tenses the palmar aponeurosis"
+  },
+  {
+   "id": "flexor_carpi_ulnaris",
+   "group": "forearms",
+   "latin": "Musculus flexor carpi ulnaris",
+   "names": {
+    "en": {
+     "primary": "Flexor Carpi Ulnaris",
+     "aliases": [
+      "Wrist Flexors",
+      "Forearm Flexors"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Flexes and ulnarly deviates the wrist",
+   "parts": [
+    "flexor_carpi_ulnaris_humeral",
+    "flexor_carpi_ulnaris_ulnar"
+   ]
+  },
+  {
+   "id": "flexor_digitorum_superficialis",
+   "group": "forearms",
+   "latin": "Musculus flexor digitorum superficialis",
+   "names": {
+    "en": {
+     "primary": "Flexor Digitorum Superficialis",
+     "aliases": [
+      "Finger Flexors",
+      "Forearm Flexors",
+      "Grip"
+     ]
+    }
+   },
+   "layer": "intermediate",
+   "action": "Flexes the fingers at the middle joints; flexes the wrist",
+   "parts": [
+    "flexor_digitorum_superficialis_humeroulnar",
+    "flexor_digitorum_superficialis_radial"
+   ]
+  },
+  {
+   "id": "flexor_digitorum_profundus",
+   "group": "forearms",
+   "latin": "Musculus flexor digitorum profundus",
+   "names": {
+    "en": {
+     "primary": "Flexor Digitorum Profundus",
+     "aliases": [
+      "Finger Flexors",
+      "Forearm Flexors",
+      "Grip"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Flexes the fingertips; main grip muscle; flexes the wrist"
+  },
+  {
+   "id": "flexor_pollicis_longus",
+   "group": "forearms",
+   "latin": "Musculus flexor pollicis longus",
+   "names": {
+    "en": {
+     "primary": "Flexor Pollicis Longus",
+     "aliases": [
+      "Thumb Flexor"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Flexes the thumb"
+  },
+  {
+   "id": "pronator_quadratus",
+   "group": "forearms",
+   "latin": "Musculus pronator quadratus",
+   "names": {
+    "en": {
+     "primary": "Pronator Quadratus",
+     "aliases": []
+    }
+   },
+   "layer": "deep",
+   "action": "Pronates the forearm"
+  },
+  {
+   "id": "extensor_carpi_radialis_longus",
+   "group": "forearms",
+   "latin": "Musculus extensor carpi radialis longus",
+   "names": {
+    "en": {
+     "primary": "Extensor Carpi Radialis Longus",
+     "aliases": [
+      "Wrist Extensors",
+      "Forearm Extensors",
+      "ECRL"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Extends and radially deviates the wrist"
+  },
+  {
+   "id": "extensor_carpi_radialis_brevis",
+   "group": "forearms",
+   "latin": "Musculus extensor carpi radialis brevis",
+   "names": {
+    "en": {
+     "primary": "Extensor Carpi Radialis Brevis",
+     "aliases": [
+      "Wrist Extensors",
+      "Forearm Extensors",
+      "ECRB"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Extends and radially deviates the wrist"
+  },
+  {
+   "id": "extensor_digitorum",
+   "group": "forearms",
+   "latin": "Musculus extensor digitorum",
+   "names": {
+    "en": {
+     "primary": "Extensor Digitorum",
+     "aliases": [
+      "Finger Extensors",
+      "Forearm Extensors"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Extends the fingers and the wrist"
+  },
+  {
+   "id": "extensor_digiti_minimi",
+   "group": "forearms",
+   "latin": "Musculus extensor digiti minimi",
+   "names": {
+    "en": {
+     "primary": "Extensor Digiti Minimi",
+     "aliases": [
+      "Forearm Extensors"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Extends the little finger"
+  },
+  {
+   "id": "extensor_carpi_ulnaris",
+   "group": "forearms",
+   "latin": "Musculus extensor carpi ulnaris",
+   "names": {
+    "en": {
+     "primary": "Extensor Carpi Ulnaris",
+     "aliases": [
+      "Wrist Extensors",
+      "Forearm Extensors",
+      "ECU"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Extends and ulnarly deviates the wrist",
+   "parts": [
+    "extensor_carpi_ulnaris_humeral",
+    "extensor_carpi_ulnaris_ulnar"
+   ]
+  },
+  {
+   "id": "supinator",
+   "group": "forearms",
+   "latin": "Musculus supinator",
+   "names": {
+    "en": {
+     "primary": "Supinator",
+     "aliases": []
+    }
+   },
+   "layer": "deep",
+   "action": "Supinates the forearm"
+  },
+  {
+   "id": "abductor_pollicis_longus",
+   "group": "forearms",
+   "latin": "Musculus abductor pollicis longus",
+   "names": {
+    "en": {
+     "primary": "Abductor Pollicis Longus",
+     "aliases": [
+      "Thumb Muscles"
+     ]
+    }
+   },
+   "layer": "intermediate",
+   "action": "Abducts and extends the thumb; radially deviates the wrist"
+  },
+  {
+   "id": "extensor_pollicis_brevis",
+   "group": "forearms",
+   "latin": "Musculus extensor pollicis brevis",
+   "names": {
+    "en": {
+     "primary": "Extensor Pollicis Brevis",
+     "aliases": [
+      "Thumb Muscles"
+     ]
+    }
+   },
+   "layer": "intermediate",
+   "action": "Extends the thumb"
+  },
+  {
+   "id": "extensor_pollicis_longus",
+   "group": "forearms",
+   "latin": "Musculus extensor pollicis longus",
+   "names": {
+    "en": {
+     "primary": "Extensor Pollicis Longus",
+     "aliases": [
+      "Thumb Muscles"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Extends the thumb"
+  },
+  {
+   "id": "extensor_indicis",
+   "group": "forearms",
+   "latin": "Musculus extensor indicis",
+   "names": {
+    "en": {
+     "primary": "Extensor Indicis",
+     "aliases": []
+    }
+   },
+   "layer": "deep",
+   "action": "Extends the index finger"
+  },
+  {
+   "id": "thenar_muscles",
+   "group": "hands",
+   "latin": "Musculi thenares et adductor pollicis",
+   "names": {
+    "en": {
+     "primary": "Thenar Muscles",
+     "aliases": [
+      "Thumb Pad",
+      "Thenar Eminence"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Move and oppose the thumb; pinch grip"
+  },
+  {
+   "id": "hypothenar_muscles",
+   "group": "hands",
+   "latin": "Musculi hypothenares",
+   "names": {
+    "en": {
+     "primary": "Hypothenar Muscles",
+     "aliases": [
+      "Hypothenar Eminence",
+      "Pinky Pad"
+     ]
+    }
+   },
+   "layer": "superficial",
+   "action": "Move the little finger; cup the palm"
+  },
+  {
+   "id": "hand_interossei",
+   "group": "hands",
+   "latin": "Musculi interossei manus",
+   "names": {
+    "en": {
+     "primary": "Interossei of Hand",
+     "aliases": [
+      "Interossei",
+      "Finger Spreaders"
+     ]
+    }
+   },
+   "layer": "deep",
+   "action": "Spread and close the fingers; flex the knuckles"
+  }
+ ],
+ "parts": [
+  {
+   "id": "sternocleidomastoid",
+   "muscle": "sternocleidomastoid"
+  },
+  {
+   "id": "scalenus_anterior",
+   "muscle": "scalenes",
+   "latin": "Musculus scalenus anterior",
+   "names": {
+    "en": {
+     "primary": "Anterior Scalene",
+     "aliases": []
+    }
+   },
+   "layer": "deep"
+  },
+  {
+   "id": "scalenus_medius",
+   "muscle": "scalenes",
+   "latin": "Musculus scalenus medius",
+   "names": {
+    "en": {
+     "primary": "Middle Scalene",
+     "aliases": []
+    }
+   }
+  },
+  {
+   "id": "scalenus_posterior",
+   "muscle": "scalenes",
+   "latin": "Musculus scalenus posterior",
+   "names": {
+    "en": {
+     "primary": "Posterior Scalene",
+     "aliases": []
+    }
+   }
+  },
+  {
+   "id": "splenius_capitis",
+   "muscle": "splenius_capitis"
+  },
+  {
+   "id": "splenius_cervicis",
+   "muscle": "splenius_cervicis"
+  },
+  {
+   "id": "levator_scapulae",
+   "muscle": "levator_scapulae"
+  },
+  {
+   "id": "longus_colli",
+   "muscle": "longus_colli"
+  },
+  {
+   "id": "longus_capitis",
+   "muscle": "longus_capitis"
+  },
+  {
+   "id": "deltoid_anterior",
+   "muscle": "deltoid",
+   "latin": "Deltoideus, pars clavicularis",
+   "names": {
+    "en": {
+     "primary": "Front Deltoid",
+     "aliases": [
+      "Anterior Deltoid",
+      "Front Delts",
+      "Front Delt"
+     ]
+    }
+   }
+  },
+  {
+   "id": "deltoid_lateral",
+   "muscle": "deltoid",
+   "latin": "Deltoideus, pars acromialis",
+   "names": {
+    "en": {
+     "primary": "Side Deltoid",
+     "aliases": [
+      "Lateral Deltoid",
+      "Side Delts",
+      "Middle Delts",
+      "Side Delt"
+     ]
+    }
+   }
+  },
+  {
+   "id": "deltoid_posterior",
+   "muscle": "deltoid",
+   "latin": "Deltoideus, pars spinalis",
+   "names": {
+    "en": {
+     "primary": "Rear Deltoid",
+     "aliases": [
+      "Posterior Deltoid",
+      "Rear Delts",
+      "Rear Delt"
+     ]
+    }
+   }
+  },
+  {
+   "id": "supraspinatus",
+   "muscle": "supraspinatus"
+  },
+  {
+   "id": "infraspinatus",
+   "muscle": "infraspinatus"
+  },
+  {
+   "id": "teres_minor",
+   "muscle": "teres_minor"
+  },
+  {
+   "id": "subscapularis",
+   "muscle": "subscapularis"
+  },
+  {
+   "id": "pectoralis_major_clavicular",
+   "muscle": "pectoralis_major",
+   "latin": "Pectoralis major, pars clavicularis",
+   "names": {
+    "en": {
+     "primary": "Upper Chest",
+     "aliases": [
+      "Clavicular Head",
+      "Upper Pecs",
+      "Clavicular Pec"
+     ]
+    }
+   }
+  },
+  {
+   "id": "pectoralis_major_sternocostal",
+   "muscle": "pectoralis_major",
+   "latin": "Pectoralis major, pars sternocostalis",
+   "names": {
+    "en": {
+     "primary": "Mid Chest",
+     "aliases": [
+      "Sternal Head",
+      "Sternocostal Head",
+      "Middle Chest"
+     ]
+    }
+   }
+  },
+  {
+   "id": "pectoralis_major_abdominal",
+   "muscle": "pectoralis_major",
+   "latin": "Pectoralis major, pars abdominalis",
+   "names": {
+    "en": {
+     "primary": "Lower Chest",
+     "aliases": [
+      "Abdominal Head",
+      "Lower Pecs"
+     ]
+    }
+   }
+  },
+  {
+   "id": "pectoralis_minor",
+   "muscle": "pectoralis_minor"
+  },
+  {
+   "id": "subclavius",
+   "muscle": "subclavius"
+  },
+  {
+   "id": "serratus_anterior",
+   "muscle": "serratus_anterior"
+  },
+  {
+   "id": "external_intercostals",
+   "muscle": "intercostals",
+   "latin": "Musculi intercostales externi",
+   "names": {
+    "en": {
+     "primary": "External Intercostals",
+     "aliases": []
+    }
+   }
+  },
+  {
+   "id": "internal_intercostals",
+   "muscle": "intercostals",
+   "latin": "Musculi intercostales interni",
+   "names": {
+    "en": {
+     "primary": "Internal Intercostals",
+     "aliases": []
+    }
+   }
+  },
+  {
+   "id": "innermost_intercostals",
+   "muscle": "intercostals",
+   "latin": "Musculi intercostales intimi",
+   "names": {
+    "en": {
+     "primary": "Innermost Intercostals",
+     "aliases": []
+    }
+   }
+  },
+  {
+   "id": "trapezius_upper",
+   "muscle": "trapezius",
+   "latin": "Trapezius, pars descendens",
+   "names": {
+    "en": {
+     "primary": "Upper Trapezius",
+     "aliases": [
+      "Upper Traps",
+      "Traps"
+     ]
+    }
+   }
+  },
+  {
+   "id": "trapezius_middle",
+   "muscle": "trapezius",
+   "latin": "Trapezius, pars transversa",
+   "names": {
+    "en": {
+     "primary": "Middle Trapezius",
+     "aliases": [
+      "Mid Traps",
+      "Middle Traps"
+     ]
+    }
+   }
+  },
+  {
+   "id": "trapezius_lower",
+   "muscle": "trapezius",
+   "latin": "Trapezius, pars ascendens",
+   "names": {
+    "en": {
+     "primary": "Lower Trapezius",
+     "aliases": [
+      "Lower Traps"
+     ]
+    }
+   }
+  },
+  {
+   "id": "latissimus_dorsi",
+   "muscle": "latissimus_dorsi"
+  },
+  {
+   "id": "teres_major",
+   "muscle": "teres_major"
+  },
+  {
+   "id": "rhomboid_major",
+   "muscle": "rhomboids",
+   "latin": "Musculus rhomboideus major",
+   "names": {
+    "en": {
+     "primary": "Rhomboid Major",
+     "aliases": []
+    }
+   }
+  },
+  {
+   "id": "rhomboid_minor",
+   "muscle": "rhomboids",
+   "latin": "Musculus rhomboideus minor",
+   "names": {
+    "en": {
+     "primary": "Rhomboid Minor",
+     "aliases": []
+    }
+   }
+  },
+  {
+   "id": "serratus_posterior_superior",
+   "muscle": "serratus_posterior_superior"
+  },
+  {
+   "id": "serratus_posterior_inferior",
+   "muscle": "serratus_posterior_inferior"
+  },
+  {
+   "id": "semispinalis",
+   "muscle": "semispinalis"
+  },
+  {
+   "id": "iliocostalis",
+   "muscle": "erector_spinae",
+   "latin": "Musculus iliocostalis",
+   "names": {
+    "en": {
+     "primary": "Iliocostalis",
+     "aliases": []
+    }
+   }
+  },
+  {
+   "id": "longissimus",
+   "muscle": "erector_spinae",
+   "latin": "Musculus longissimus",
+   "names": {
+    "en": {
+     "primary": "Longissimus",
+     "aliases": []
+    }
+   }
+  },
+  {
+   "id": "spinalis",
+   "muscle": "erector_spinae",
+   "latin": "Musculus spinalis",
+   "names": {
+    "en": {
+     "primary": "Spinalis",
+     "aliases": []
+    }
+   },
+   "layer": "deep"
+  },
+  {
+   "id": "multifidus",
+   "muscle": "multifidus"
+  },
+  {
+   "id": "rotatores",
+   "muscle": "rotatores"
+  },
+  {
+   "id": "quadratus_lumborum",
+   "muscle": "quadratus_lumborum"
+  },
+  {
+   "id": "rectus_abdominis",
+   "muscle": "rectus_abdominis"
+  },
+  {
+   "id": "external_oblique",
+   "muscle": "external_oblique"
+  },
+  {
+   "id": "internal_oblique",
+   "muscle": "internal_oblique"
+  },
+  {
+   "id": "transversus_abdominis",
+   "muscle": "transversus_abdominis"
+  },
+  {
+   "id": "psoas_major",
+   "muscle": "iliopsoas",
+   "latin": "Musculus psoas major",
+   "names": {
+    "en": {
+     "primary": "Psoas Major",
+     "aliases": [
+      "Psoas"
+     ]
+    }
+   }
+  },
+  {
+   "id": "iliacus",
+   "muscle": "iliopsoas",
+   "latin": "Musculus iliacus",
+   "names": {
+    "en": {
+     "primary": "Iliacus",
+     "aliases": []
+    }
+   }
+  },
+  {
+   "id": "sartorius",
+   "muscle": "sartorius"
+  },
+  {
+   "id": "gluteus_maximus",
+   "muscle": "gluteus_maximus"
+  },
+  {
+   "id": "gluteus_medius",
+   "muscle": "gluteus_medius"
+  },
+  {
+   "id": "gluteus_minimus",
+   "muscle": "gluteus_minimus"
+  },
+  {
+   "id": "tensor_fasciae_latae",
+   "muscle": "tensor_fasciae_latae"
+  },
+  {
+   "id": "piriformis",
+   "muscle": "piriformis"
+  },
+  {
+   "id": "gemellus_superior",
+   "muscle": "gemellus_superior"
+  },
+  {
+   "id": "obturator_internus",
+   "muscle": "obturator_internus"
+  },
+  {
+   "id": "gemellus_inferior",
+   "muscle": "gemellus_inferior"
+  },
+  {
+   "id": "obturator_externus",
+   "muscle": "obturator_externus"
+  },
+  {
+   "id": "quadratus_femoris",
+   "muscle": "quadratus_femoris"
+  },
+  {
+   "id": "rectus_femoris",
+   "muscle": "rectus_femoris"
+  },
+  {
+   "id": "vastus_lateralis",
+   "muscle": "vastus_lateralis"
+  },
+  {
+   "id": "vastus_medialis",
+   "muscle": "vastus_medialis"
+  },
+  {
+   "id": "vastus_intermedius",
+   "muscle": "vastus_intermedius"
+  },
+  {
+   "id": "adductor_longus",
+   "muscle": "adductor_longus"
+  },
+  {
+   "id": "adductor_brevis",
+   "muscle": "adductor_brevis"
+  },
+  {
+   "id": "adductor_magnus",
+   "muscle": "adductor_magnus"
+  },
+  {
+   "id": "gracilis",
+   "muscle": "gracilis"
+  },
+  {
+   "id": "pectineus",
+   "muscle": "pectineus"
+  },
+  {
+   "id": "biceps_femoris_long",
+   "muscle": "biceps_femoris",
+   "latin": "Biceps femoris, caput longum",
+   "names": {
+    "en": {
+     "primary": "Biceps Femoris (Long Head)",
+     "aliases": [
+      "Hamstrings"
+     ]
+    }
+   }
+  },
+  {
+   "id": "biceps_femoris_short",
+   "muscle": "biceps_femoris",
+   "latin": "Biceps femoris, caput breve",
+   "names": {
+    "en": {
+     "primary": "Biceps Femoris (Short Head)",
+     "aliases": [
+      "Hamstrings"
+     ]
+    }
+   },
+   "layer": "intermediate"
+  },
+  {
+   "id": "semitendinosus",
+   "muscle": "semitendinosus"
+  },
+  {
+   "id": "semimembranosus",
+   "muscle": "semimembranosus"
+  },
+  {
+   "id": "gastrocnemius_medial",
+   "muscle": "gastrocnemius",
+   "latin": "Gastrocnemius, caput mediale",
+   "names": {
+    "en": {
+     "primary": "Gastrocnemius (Medial Head)",
+     "aliases": [
+      "Inner Calf"
+     ]
+    }
+   }
+  },
+  {
+   "id": "gastrocnemius_lateral",
+   "muscle": "gastrocnemius",
+   "latin": "Gastrocnemius, caput laterale",
+   "names": {
+    "en": {
+     "primary": "Gastrocnemius (Lateral Head)",
+     "aliases": [
+      "Outer Calf"
+     ]
+    }
+   }
+  },
+  {
+   "id": "soleus",
+   "muscle": "soleus"
+  },
+  {
+   "id": "plantaris",
+   "muscle": "plantaris"
+  },
+  {
+   "id": "popliteus",
+   "muscle": "popliteus"
+  },
+  {
+   "id": "tibialis_posterior",
+   "muscle": "tibialis_posterior"
+  },
+  {
+   "id": "flexor_digitorum_longus",
+   "muscle": "flexor_digitorum_longus"
+  },
+  {
+   "id": "flexor_hallucis_longus",
+   "muscle": "flexor_hallucis_longus"
+  },
+  {
+   "id": "tibialis_anterior",
+   "muscle": "tibialis_anterior"
+  },
+  {
+   "id": "extensor_digitorum_longus",
+   "muscle": "extensor_digitorum_longus"
+  },
+  {
+   "id": "extensor_hallucis_longus",
+   "muscle": "extensor_hallucis_longus"
+  },
+  {
+   "id": "fibularis_longus",
+   "muscle": "fibularis_longus"
+  },
+  {
+   "id": "fibularis_brevis",
+   "muscle": "fibularis_brevis"
+  },
+  {
+   "id": "fibularis_tertius",
+   "muscle": "fibularis_tertius"
+  },
+  {
+   "id": "biceps_brachii_long",
+   "muscle": "biceps_brachii",
+   "latin": "Biceps brachii, caput longum",
+   "names": {
+    "en": {
+     "primary": "Biceps (Long Head)",
+     "aliases": [
+      "Outer Biceps",
+      "Biceps Peak"
+     ]
+    }
+   }
+  },
+  {
+   "id": "biceps_brachii_short",
+   "muscle": "biceps_brachii",
+   "latin": "Biceps brachii, caput breve",
+   "names": {
+    "en": {
+     "primary": "Biceps (Short Head)",
+     "aliases": [
+      "Inner Biceps"
+     ]
+    }
+   }
+  },
+  {
+   "id": "brachialis",
+   "muscle": "brachialis"
+  },
+  {
+   "id": "coracobrachialis",
+   "muscle": "coracobrachialis"
+  },
+  {
+   "id": "triceps_long",
+   "muscle": "triceps_brachii",
+   "latin": "Triceps brachii, caput longum",
+   "names": {
+    "en": {
+     "primary": "Triceps (Long Head)",
+     "aliases": [
+      "Triceps",
+      "Long Head"
+     ]
+    }
+   }
+  },
+  {
+   "id": "triceps_lateral",
+   "muscle": "triceps_brachii",
+   "latin": "Triceps brachii, caput laterale",
+   "names": {
+    "en": {
+     "primary": "Triceps (Lateral Head)",
+     "aliases": [
+      "Triceps",
+      "Outer Triceps",
+      "Horseshoe"
+     ]
+    }
+   }
+  },
+  {
+   "id": "triceps_medial",
+   "muscle": "triceps_brachii",
+   "latin": "Triceps brachii, caput mediale",
+   "names": {
+    "en": {
+     "primary": "Triceps (Medial Head)",
+     "aliases": [
+      "Triceps"
+     ]
+    }
+   },
+   "layer": "intermediate"
+  },
+  {
+   "id": "anconeus",
+   "muscle": "anconeus"
+  },
+  {
+   "id": "brachioradialis",
+   "muscle": "brachioradialis"
+  },
+  {
+   "id": "pronator_teres_humeral",
+   "muscle": "pronator_teres",
+   "latin": "Pronator teres, caput humerale",
+   "names": {
+    "en": {
+     "primary": "Pronator Teres (Humeral Head)",
+     "aliases": []
+    }
+   }
+  },
+  {
+   "id": "pronator_teres_ulnar",
+   "muscle": "pronator_teres",
+   "latin": "Pronator teres, caput ulnare",
+   "names": {
+    "en": {
+     "primary": "Pronator Teres (Ulnar Head)",
+     "aliases": []
+    }
+   },
+   "layer": "deep"
+  },
+  {
+   "id": "flexor_carpi_radialis",
+   "muscle": "flexor_carpi_radialis"
+  },
+  {
+   "id": "palmaris_longus",
+   "muscle": "palmaris_longus"
+  },
+  {
+   "id": "flexor_carpi_ulnaris_humeral",
+   "muscle": "flexor_carpi_ulnaris",
+   "latin": "Flexor carpi ulnaris, caput humerale",
+   "names": {
+    "en": {
+     "primary": "Flexor Carpi Ulnaris (Humeral Head)",
+     "aliases": []
+    }
+   }
+  },
+  {
+   "id": "flexor_carpi_ulnaris_ulnar",
+   "muscle": "flexor_carpi_ulnaris",
+   "latin": "Flexor carpi ulnaris, caput ulnare",
+   "names": {
+    "en": {
+     "primary": "Flexor Carpi Ulnaris (Ulnar Head)",
+     "aliases": []
+    }
+   }
+  },
+  {
+   "id": "flexor_digitorum_superficialis_humeroulnar",
+   "muscle": "flexor_digitorum_superficialis",
+   "latin": "Flexor digitorum superficialis, caput humero-ulnare",
+   "names": {
+    "en": {
+     "primary": "Flexor Digitorum Superficialis (Humero-ulnar Head)",
+     "aliases": []
+    }
+   }
+  },
+  {
+   "id": "flexor_digitorum_superficialis_radial",
+   "muscle": "flexor_digitorum_superficialis",
+   "latin": "Flexor digitorum superficialis, caput radiale",
+   "names": {
+    "en": {
+     "primary": "Flexor Digitorum Superficialis (Radial Head)",
+     "aliases": []
+    }
+   }
+  },
+  {
+   "id": "flexor_digitorum_profundus",
+   "muscle": "flexor_digitorum_profundus"
+  },
+  {
+   "id": "flexor_pollicis_longus",
+   "muscle": "flexor_pollicis_longus"
+  },
+  {
+   "id": "pronator_quadratus",
+   "muscle": "pronator_quadratus"
+  },
+  {
+   "id": "extensor_carpi_radialis_longus",
+   "muscle": "extensor_carpi_radialis_longus"
+  },
+  {
+   "id": "extensor_carpi_radialis_brevis",
+   "muscle": "extensor_carpi_radialis_brevis"
+  },
+  {
+   "id": "extensor_digitorum",
+   "muscle": "extensor_digitorum"
+  },
+  {
+   "id": "extensor_digiti_minimi",
+   "muscle": "extensor_digiti_minimi"
+  },
+  {
+   "id": "extensor_carpi_ulnaris_humeral",
+   "muscle": "extensor_carpi_ulnaris",
+   "latin": "Extensor carpi ulnaris, caput humerale",
+   "names": {
+    "en": {
+     "primary": "Extensor Carpi Ulnaris (Humeral Head)",
+     "aliases": []
+    }
+   }
+  },
+  {
+   "id": "extensor_carpi_ulnaris_ulnar",
+   "muscle": "extensor_carpi_ulnaris",
+   "latin": "Extensor carpi ulnaris, caput ulnare",
+   "names": {
+    "en": {
+     "primary": "Extensor Carpi Ulnaris (Ulnar Head)",
+     "aliases": []
+    }
+   }
+  },
+  {
+   "id": "supinator",
+   "muscle": "supinator"
+  },
+  {
+   "id": "abductor_pollicis_longus",
+   "muscle": "abductor_pollicis_longus"
+  },
+  {
+   "id": "extensor_pollicis_brevis",
+   "muscle": "extensor_pollicis_brevis"
+  },
+  {
+   "id": "extensor_pollicis_longus",
+   "muscle": "extensor_pollicis_longus"
+  },
+  {
+   "id": "extensor_indicis",
+   "muscle": "extensor_indicis"
+  },
+  {
+   "id": "thenar_muscles",
+   "muscle": "thenar_muscles"
+  },
+  {
+   "id": "hypothenar_muscles",
+   "muscle": "hypothenar_muscles"
+  },
+  {
+   "id": "hand_interossei",
+   "muscle": "hand_interossei"
+  }
+ ]
+}

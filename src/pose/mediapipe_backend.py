@@ -58,6 +58,17 @@ class MediaPipePoseBackend:
                     "x": float(landmark.x),
                     "y": float(landmark.y),
                     "z": float(landmark.z),
+                    # World Landmark 与 normalized landmark 使用同一索引；
+                    # 保存真实可见度，旧 pose.json 由前端回退读取 visibility 字段。
+                    "visibility": float(
+                        getattr(
+                            landmark,
+                            "visibility",
+                            getattr(results.pose_landmarks.landmark[index], "visibility", float("nan"))
+                            if results.pose_landmarks
+                            else float("nan"),
+                        )
+                    ),
                 }
 
         return {
